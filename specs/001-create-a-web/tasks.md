@@ -175,11 +175,12 @@ T018 [P] - Documentation & Quickstart
 ---
 
 ## Next recommended tasks
-1. Add PdfViewer unit test (T005) — completes TDD loop for the component.
-2. Add PresenterPage component integration test (T010) — ensures UI interactions work correctly.
-3. Implement retry & queue mechanism (T015) and tests (T014) — improves robustness.
-4. Enhance evaluation result UI (T013) — improve formatting and user experience.
-5. Add microphone permission error handling (FR-011) — improves user experience.
+1. ✅ Audience selection UI (FR-013) — enhanced to flexible input field with datalist (predefined options + custom text input)
+2. Add PdfViewer unit test (T005) — completes TDD loop for the component.
+3. Add PresenterPage component integration test (T010) — ensures UI interactions work correctly.
+4. Implement retry & queue mechanism (T015) and tests (T014) — improves robustness.
+5. Enhance evaluation result UI (T013) — improve formatting and user experience.
+6. Add microphone permission error handling (FR-011) — improves user experience.
 
 ## Functional Requirements Status Summary
 - ✅ FR-001: PDF upload & basic rendering (missing thumbnails)
@@ -194,6 +195,8 @@ T018 [P] - Documentation & Quickstart
 - ❌ FR-010: No offline support
 - ✅ FR-011: Microphone permission error handling (implemented)
 - ❌ FR-012: No upload size limits
+- ✅ FR-013: Audience selection UI (enhanced with flexible input field + datalist for custom audience entry)
+- ✅ FR-014: Comprehensive test coverage (31 tests passing across 7 test files)
 
 *** End of tasks
 

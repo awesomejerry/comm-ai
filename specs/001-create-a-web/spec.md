@@ -42,14 +42,14 @@
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
-As a user preparing a spoken slide presentation, I want to upload a PDF, navigate it as slides, record my spoken narration while moving through slides, and have each recording segment evaluated by the server when I pause recording so I can receive feedback inline while continuing my rehearsal.
+As a user preparing a spoken slide presentation, I want to upload a PDF, specify my target audience, navigate it as slides, record my spoken narration while moving through slides, and have each recording segment evaluated by the server when I pause recording so I can receive audience-specific feedback inline while continuing my rehearsal.
 
 ### Acceptance Scenarios
-1. Given an empty session, When a user uploads a PDF, Then the app presents the PDF as slide thumbnails and a main slide view with next/previous controls.
-2. Given the PDF is loaded, When the user starts audio recording, Then the app begins capturing microphone audio and shows a live recording indicator and elapsed time.
+1. Given an empty session, When a user uploads a PDF and selects their target audience, Then the app presents the PDF as slide thumbnails and a main slide view with next/previous controls.
+2. Given the PDF is loaded and audience is selected, When the user starts audio recording, Then the app begins capturing microphone audio and shows a live recording indicator and elapsed time.
 3. Given recording is active, When the user navigates slides, Then slide changes do not stop recording and the current slide index is recorded as metadata for the audio timeline.
-4. Given recording is active, When the user pauses recording, Then the app uploads the most recent audio segment to the evaluation server and shows an uploading indicator.
-5. Given the server returns evaluation, When the evaluation arrives, Then the UI displays the evaluation results tied to the segment and slide(s) covered during that segment.
+4. Given recording is active, When the user pauses recording, Then the app uploads the most recent audio segment with audience context to the evaluation server and shows an uploading indicator.
+5. Given the server returns evaluation, When the evaluation arrives, Then the UI displays the audience-specific evaluation results tied to the segment and slide(s) covered during that segment.
 6. Given the user resumes recording after a pause, When they continue speaking, Then new audio is appended as a new segment and can be paused/uploaded independently.
 7. Given a network or server error during upload, When the upload fails, Then the app retries with exponential backoff and provides a user-visible error and retry control.
 
@@ -76,14 +76,16 @@ As a user preparing a spoken slide presentation, I want to upload a PDF, navigat
 - **FR-010**: System SHOULD support offline recording with local buffering of segments until network returns. Offline persistence across browser restarts is NOT required at this time.
 - **FR-011**: System MUST provide clear permission and error UI when microphone access is denied.
 - **FR-012**: System SHOULD limit single upload size or segment length to a configurable limit to avoid server timeouts. No explicit limit is required at this time.
+- **FR-013**: System MUST allow users to specify their pitch audience (e.g., "investors", "customers", "team") which will be included with uploaded audio segments for context-aware evaluation.
 
 *Marked clarifications are intentionally left for product/PO decisions.*
 
 ### Key Entities *(include if feature involves data)*
 - **Presentation**: Represents an uploaded PDF resource and its metadata (title, page count, thumbnail cache).
 - **Slide**: Represents a single page in the Presentation, referenced by 0-based index.
-- **RecordingSegment**: Represents a continuous audio recording between start/resume and pause/stop. Attributes: segmentId, startTime, endTime, slideRange (startSlide,endSlide), localFileRef, uploadState (queued/uploading/failed/evaluated), serverEvaluation (nullable).
+- **RecordingSegment**: Represents a continuous audio recording between start/resume and pause/stop. Attributes: segmentId, startTime, endTime, slideRange (startSlide,endSlide), audience (string), localFileRef, uploadState (queued/uploading/failed/evaluated), serverEvaluation (nullable).
 - **EvaluationResult**: Represents the server's evaluation of an audio segment: score(s), feedback text, timestamps, and any structured metrics.
+- **AudienceContext**: Represents the target audience for the pitch (e.g., "investors", "customers", "team") that provides context for evaluation.
 
 ---
 
@@ -129,6 +131,7 @@ Assumptions about request/response shape (implementation will adapt if server re
 	- `segmentId`: string (unique id for the segment)
 	- `startSlide`: integer
 	- `endSlide`: integer
+	- `audience`: string (target audience context, e.g., "investors", "customers", "team")
 	- `duration`: optional number (seconds)
 
 - Response: JSON object containing at minimum:

@@ -19,6 +19,7 @@ Entities (client-side):
   - endTime: ISO timestamp
   - startSlide: integer
   - endSlide: integer
+  - audience: string (target audience context, e.g., "investors", "customers", "team")
   - blobRef: temporary in-memory blob or local URL
   - uploadState: enum { queued, uploading, failed, evaluated }
   - evaluation?: EvaluationResult
@@ -28,6 +29,10 @@ Entities (client-side):
   - input: string    # raw input field from evaluation API
   - output: string   # raw output/feedback field from evaluation API
   - receivedAt: ISO timestamp
+
+- AudienceContext
+  - type: string (e.g., "investors", "customers", "team", "general")
+  - description?: string (optional human-readable description)
 
 Adapter: Implement a lightweight adapter that maps the API `input`/`output` to the client-facing fields (e.g., `score`/`feedback`) if needed. Keep the raw API fields available for auditing.
 

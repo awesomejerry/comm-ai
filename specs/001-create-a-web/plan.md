@@ -4,7 +4,7 @@
 **Input**: Feature specification from `/home/jerry/workspace/comm-ai/specs/001-create-a-web/spec.md`
 
 ### Summary
-Implement a frontend-only web application (Vite + React) that allows users to upload a PDF, navigate slides, record audio while navigating, and upload paused segments to an evaluation webhook. Use Jotai for state, Tailwind CSS for styling, Playwright for e2e, and follow TDD with failing tests first.
+Implement a frontend-only web application (Vite + React) that allows users to upload a PDF, specify their target audience, navigate slides, record audio while navigating, and upload paused segments to an evaluation webhook. Use Jotai for state, Tailwind CSS for styling, Playwright for e2e, and follow TDD with failing tests first.
 
 ### Technical Context
 - Language/Version: TypeScript (ES2023 target), React 18
@@ -25,7 +25,7 @@ Implement a frontend-only web application (Vite + React) that allows users to up
 - Resolve browser recording formats and server integration (product provided: accept browser formats; webhook URL provided). No offline persistence required.
 
 ### Phase 1: Design & Contracts (outputs: data-model.md, contracts/, quickstart.md)
-- Data model focuses on client-side shape: Presentation, Slide, RecordingSegment, EvaluationResult
+- Data model focuses on client-side shape: Presentation, Slide, RecordingSegment, EvaluationResult, AudienceContext
 - Contracts: OpenAPI-lite contract for the evaluation webhook (contracts/evaluation-api.yaml)
 - Quickstart: step-by-step dev run and test instructions
 

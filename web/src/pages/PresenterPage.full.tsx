@@ -10,6 +10,7 @@ export default function PresenterPageFull() {
   const [segments, setSegments] = useState<any[]>([])
   const [isRecording, setIsRecording] = useState(false)
   const [microphoneError, setMicrophoneError] = useState<string | null>(null)
+  const [selectedAudience, setSelectedAudience] = useState<string>('')
 
   const rcRef = React.useRef<RecordingController | null>(null)
   const uploaderQueueRef = React.useRef<UploaderQueue | null>(null)
@@ -29,7 +30,7 @@ export default function PresenterPageFull() {
     
     const rc = new RecordingController({ 
       onSegmentReady: async (seg) => {
-        setSegments(s => [...s, { ...seg, state: 'uploading' }])
+        setSegments(s => [...s, { ...seg, state: 'uploading', audience: selectedAudience }])
         
         // Add segment to upload queue with retry mechanism
         uploaderQueueRef.current?.addSegment({
@@ -37,6 +38,7 @@ export default function PresenterPageFull() {
           blob: seg.blob,
           startSlide: seg.startSlide,
           endSlide: seg.endSlide,
+          audience: selectedAudience,
           onComplete: (result) => {
             setSegments(s => s.map(x => x.id === seg.id ? { ...x, state: 'evaluated', evaluation: result } : x))
           },
@@ -96,6 +98,27 @@ export default function PresenterPageFull() {
                     className="input-field w-full file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     aria-label="Upload PDF file"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="audience-input">
+                    Target Audience
+                  </label>
+                  <input
+                    id="audience-input"
+                    type="text"
+                    value={selectedAudience}
+                    onChange={(e) => setSelectedAudience(e.target.value)}
+                    placeholder="e.g., investors, customers, team, or type custom..."
+                    list="audience-options"
+                    className="input-field w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="Target Audience"
+                  />
+                  <datalist id="audience-options">
+                    <option value="investors" />
+                    <option value="customers" />
+                    <option value="team" />
+                    <option value="general" />
+                  </datalist>
                 </div>
                 <div className="flex space-x-3">
                   <button
@@ -168,6 +191,9 @@ export default function PresenterPageFull() {
                             </span>
                           </div>
                           <span className="text-sm text-gray-500 block mb-2">Slides {s.startSlide}-{s.endSlide}</span>
+                          {s.audience && (
+                            <span className="text-sm text-blue-600 block mb-2">Audience: {s.audience.charAt(0).toUpperCase() + s.audience.slice(1)}</span>
+                          )}
                           
                           {s.error && (
                             <div className="flex items-center space-x-3 mb-3">

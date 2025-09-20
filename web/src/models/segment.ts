@@ -4,6 +4,7 @@ export type RecordingSegment = {
   endTime?: string
   startSlide: number
   endSlide: number
+  audience?: string
   blobRef?: Blob
   uploadState: 'queued' | 'uploading' | 'failed' | 'evaluated'
   evaluation?: any

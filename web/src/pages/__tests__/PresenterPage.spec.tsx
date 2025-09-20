@@ -16,12 +16,32 @@ vi.mock('../../services/uploaderQueue', () => ({
 
 // Mock the recording controller
 vi.mock('../../recording/recordingController', () => ({
-  RecordingController: vi.fn().mockImplementation(({ onError }) => ({
-    start: vi.fn(() => {
-      // Simulate successful start
+  RecordingController: vi.fn().mockImplementation(({ onSegmentReady }) => ({
+    start: vi.fn((startSlide) => {
+      // Simulate creating a segment after starting
+      setTimeout(() => {
+        if (onSegmentReady) {
+          onSegmentReady({
+            id: 'seg1',
+            startSlide: startSlide,
+            endSlide: startSlide,
+            blob: new Blob(['test'], { type: 'audio/webm' })
+          })
+        }
+      }, 100)
       return Promise.resolve()
     }),
-    pause: vi.fn(),
+    pause: vi.fn((endSlide) => {
+      // Simulate creating a segment when pausing
+      if (onSegmentReady) {
+        onSegmentReady({
+          id: 'seg1',
+          startSlide: 1,
+          endSlide: endSlide,
+          blob: new Blob(['test'], { type: 'audio/webm' })
+        })
+      }
+    }),
     onSegmentReady: undefined
   }))
 }))
@@ -117,5 +137,88 @@ describe('PresenterPage Integration', () => {
     const fileInput = screen.getByLabelText('Upload PDF file')
     expect(fileInput).toHaveAttribute('type', 'file')
     expect(fileInput).toHaveAttribute('accept', 'application/pdf')
+  })
+
+  it('renders audience selection input field', () => {
+    render(<PresenterPageFull />)
+
+    const audienceInput = screen.getByLabelText('Target Audience')
+    expect(audienceInput).toBeInTheDocument()
+    expect(audienceInput.tagName).toBe('INPUT')
+    expect(audienceInput).toHaveAttribute('type', 'text')
+    expect(audienceInput).toHaveAttribute('list', 'audience-options')
+  })
+
+  it('displays audience suggestions in datalist', () => {
+    render(<PresenterPageFull />)
+
+    const datalist = document.getElementById('audience-options')
+    expect(datalist).toBeInTheDocument()
+    expect(datalist?.tagName).toBe('DATALIST')
+
+    const options = datalist?.querySelectorAll('option')
+    expect(options).toHaveLength(4)
+    expect(options?.[0]).toHaveAttribute('value', 'investors')
+    expect(options?.[1]).toHaveAttribute('value', 'customers')
+    expect(options?.[2]).toHaveAttribute('value', 'team')
+    expect(options?.[3]).toHaveAttribute('value', 'general')
+  })
+
+  it('allows typing custom audience and stores input', () => {
+    render(<PresenterPageFull />)
+
+    const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement
+
+    // Type custom audience
+    fireEvent.change(audienceInput, { target: { value: 'executives' } })
+
+    expect(audienceInput.value).toBe('executives')
+  })
+
+  it('allows selecting from datalist suggestions', () => {
+    render(<PresenterPageFull />)
+
+    const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement
+
+    // Select from datalist
+    fireEvent.change(audienceInput, { target: { value: 'investors' } })
+
+    expect(audienceInput.value).toBe('investors')
+  })
+
+  it('shows selected audience in recording segments', () => {
+    render(<PresenterPageFull />)
+
+    // Select audience first
+    const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement
+    fireEvent.change(audienceInput, { target: { value: 'customers' } })
+
+    // Start and stop recording to create a segment
+    const startButton = screen.getByRole('button', { name: 'Start recording' })
+    fireEvent.click(startButton)
+
+    const stopButton = screen.getByRole('button', { name: 'Stop recording' })
+    fireEvent.click(stopButton)
+
+    // Check that the segment shows the selected audience
+    expect(screen.getByText('Audience: Customers')).toBeInTheDocument()
+  })
+
+  it('shows custom typed audience in recording segments', () => {
+    render(<PresenterPageFull />)
+
+    // Type custom audience
+    const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement
+    fireEvent.change(audienceInput, { target: { value: 'board members' } })
+
+    // Start and stop recording to create a segment
+    const startButton = screen.getByRole('button', { name: 'Start recording' })
+    fireEvent.click(startButton)
+
+    const stopButton = screen.getByRole('button', { name: 'Stop recording' })
+    fireEvent.click(stopButton)
+
+    // Check that the segment shows the custom audience
+    expect(screen.getByText('Audience: Board members')).toBeInTheDocument()
   })
 })
