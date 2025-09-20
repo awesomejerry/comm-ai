@@ -31,4 +31,4 @@ app.post('/api/upload-pdf', upload.single('pdf'), (req, res) => {
 });
 
 const port = process.env.PORT || 5173;
-app.listen(port, () => console.log(`ui-presenter running on http://localhost:${port}`));
+app.listen(port, () => console.log(`comm-ai web app running on http://localhost:${port}`));
