@@ -49,15 +49,22 @@ export default function PdfViewer({
     let cancelled = false
     doc.getPage(pageNum).then((page: any) => {
       if (cancelled) return
-      const viewport = page.getViewport({ scale: 1.5 })
+      const viewport = page.getViewport({ scale: 1 })
       const canvas = canvasRef.current
-      if (!canvas) return
-      canvas.width = Math.floor(viewport.width)
-      canvas.height = Math.floor(viewport.height)
+      const container = containerRef.current
+      if (!canvas || !container) return
+      const containerWidth = container.clientWidth
+      const availableHeight = window.innerHeight * 0.8 // Use 80% of viewport height to leave space for other elements
+      const scaleX = containerWidth / viewport.width
+      const scaleY = availableHeight / viewport.height
+      const scale = Math.min(scaleX, scaleY, 1.5) // cap at 1.5 to not enlarge too much
+      const scaledViewport = page.getViewport({ scale })
+      canvas.width = Math.floor(scaledViewport.width)
+      canvas.height = Math.floor(scaledViewport.height)
       const ctx = canvas.getContext('2d')!
       const renderContext = {
         canvasContext: ctx,
-        viewport
+        viewport: scaledViewport
       }
       page.render(renderContext)
     })
@@ -74,13 +81,37 @@ export default function PdfViewer({
   }
 
   return (
-    <div ref={containerRef}>
-      <div className="flex items-center gap-2 mb-2">
-        <button onClick={prev} className="px-2 py-1 bg-gray-200 rounded">Prev</button>
-        <button onClick={next} className="px-2 py-1 bg-gray-200 rounded">Next</button>
-        <div>Page {pageNum}{doc ? ` / ${doc.numPages}` : ''}</div>
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={prev}
+            disabled={pageNum <= 1}
+            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Previous page"
+          >
+            ← Previous
+          </button>
+          <button
+            onClick={next}
+            disabled={!doc || pageNum >= doc.numPages}
+            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Next page"
+          >
+            Next →
+          </button>
+        </div>
+        <div className="text-sm text-gray-600 font-medium">
+          Page {pageNum}{doc ? ` of ${doc.numPages}` : ''}
+        </div>
       </div>
-      <canvas ref={canvasRef} />
+      <div ref={containerRef} className="p-4 bg-gray-100">
+        <canvas
+          ref={canvasRef}
+          className="max-w-full h-auto mx-auto shadow-lg rounded border border-gray-300"
+          aria-label={`PDF page ${pageNum}`}
+        />
+      </div>
     </div>
   )
 }

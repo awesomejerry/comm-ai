@@ -8,6 +8,7 @@ export default function PresenterPageFull() {
   const [pageCount, setPageCount] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [segments, setSegments] = useState<any[]>([])
+  const [isRecording, setIsRecording] = useState(false)
 
   const rcRef = React.useRef<RecordingController | null>(null)
 
@@ -28,67 +29,103 @@ export default function PresenterPageFull() {
     }})
     rcRef.current = rc
     rc.start(currentPage)
+    setIsRecording(true)
   }
 
   function pauseRec() {
     rcRef.current?.pause(currentPage)
+    setIsRecording(false)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Presentation Recorder</h1>
           <p className="text-lg text-gray-600">Upload your PDF and record audio segments for each slide</p>
+          {isRecording && (
+            <div className="mt-4 flex items-center justify-center">
+              <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse mr-3"></div>
+              <span className="text-red-600 font-semibold text-lg">🔴 Recording in Progress</span>
+            </div>
+          )}
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Control Panel */}
-          <aside className="lg:col-span-1">
-            <section className="card mb-6">
-              <h2 className="text-xl font-semibold mb-4">Controls</h2>
+          <aside className="lg:col-span-1 space-y-6">
+            <section className="card">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">Controls</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Choose PDF Presentation</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="pdf-upload">
+                    Choose PDF Presentation
+                  </label>
                   <input
+                    id="pdf-upload"
                     type="file"
                     accept="application/pdf"
                     onChange={onFile}
-                    className="input-field w-full"
+                    className="input-field w-full file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     aria-label="Upload PDF file"
                   />
                 </div>
                 <div className="flex space-x-3">
-                  <button onClick={startRec} className="btn-primary flex-1" aria-label="Start recording">
-                    Start Recording
+                  <button
+                    onClick={isRecording ? pauseRec : startRec}
+                    className={`${
+                      isRecording
+                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                        : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                    } flex-1 text-white font-medium py-3 px-4 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                    aria-label={isRecording ? "Stop recording" : "Start recording"}
+                  >
+                    {isRecording ? '⏹️ Stop Recording' : '🎤 Start Recording'}
                   </button>
-                  <button onClick={pauseRec} className="btn-secondary flex-1" aria-label="Pause recording">
-                    Pause
-                  </button>
+                  {isRecording && (
+                    <div className="flex items-center bg-red-50 px-3 py-2 rounded-lg">
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mr-2"></div>
+                      <span className="text-sm text-red-700 font-medium">Recording...</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
 
             {/* Segments List */}
             <section className="card">
-              <h2 className="text-xl font-semibold mb-4">Recording Segments</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">Recording Segments</h2>
               {segments.length === 0 ? (
-                <p className="text-gray-700">No segments recorded yet</p>
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-2">🎙️</div>
+                  <p className="text-gray-500">No segments recorded yet</p>
+                  <p className="text-sm text-gray-600 mt-1">Start recording to create your first segment</p>
+                </div>
               ) : (
-                <ul className="space-y-2" role="list">
+                <ul className="space-y-3" role="list">
                   {segments.map(s => (
-                    <li key={s.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <span className="font-medium">Segment {s.id}</span>
-                        <span className="text-sm text-gray-500 ml-2">Slides {s.startSlide}-{s.endSlide}</span>
+                    <li key={s.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium text-gray-900">Segment {s.id}</span>
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                            s.state === 'evaluated' ? 'bg-green-100 text-green-800' :
+                            s.state === 'failed' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {s.state === 'evaluated' ? '✅ Evaluated' :
+                             s.state === 'failed' ? '❌ Failed' :
+                             '⏳ Pending'}
+                          </span>
+                        </div>
+                        <span className="text-sm text-gray-500">Slides {s.startSlide}-{s.endSlide}</span>
+                        {s.evaluation && (
+                          <div className="mt-2 p-2 bg-white rounded border text-sm">
+                            <div className="font-medium text-gray-700 mb-1">Evaluation:</div>
+                            <div className="text-gray-600 whitespace-pre-wrap">{JSON.stringify(s.evaluation, null, 2)}</div>
+                          </div>
+                        )}
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        s.state === 'evaluated' ? 'bg-green-100 text-green-800' :
-                        s.state === 'failed' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {s.state}
-                      </span>
                     </li>
                   ))}
                 </ul>
@@ -99,16 +136,20 @@ export default function PresenterPageFull() {
           {/* PDF Viewer */}
           <section className="lg:col-span-2">
             <div className="card">
-              <h2 className="text-xl font-semibold mb-4">Presentation Viewer</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">Presentation Viewer</h2>
               {file ? (
-                <PdfViewer
-                  file={file}
-                  onReady={(n) => { setPageCount(n); setCurrentPage(1) }}
-                  onPageChange={(p) => setCurrentPage(p)}
-                />
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <PdfViewer
+                    file={file}
+                    onReady={(n) => { setPageCount(n); setCurrentPage(1) }}
+                    onPageChange={(p) => setCurrentPage(p)}
+                  />
+                </div>
               ) : (
-                <div className="flex items-center justify-center h-96 bg-gray-100 rounded-lg">
-                  <p className="text-gray-700">Upload a PDF to view your presentation</p>
+                <div className="flex flex-col items-center justify-center h-96 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                  <div className="text-6xl mb-4">📄</div>
+                  <p className="text-gray-700 text-lg font-medium">Upload a PDF to view your presentation</p>
+                  <p className="text-gray-500 text-sm mt-1">Supported format: PDF files</p>
                 </div>
               )}
             </div>
