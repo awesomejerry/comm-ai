@@ -47,7 +47,17 @@
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**Test-First Principle**: Does the plan include failing tests before implementation? All new functionality must begin with tests that fail initially.
+
+**Contract & Integration Safety**: For any external service interactions (APIs, webhooks), are contract tests planned? Any client POSTing to external endpoints must have contract tests.
+
+**Modular, Library-First Design**: Are reusable components/services extracted into libraries with clear interfaces? Avoid large, tightly coupled files.
+
+**Observability & Robust Error Handling**: Does the plan include structured logging, meaningful metrics, and clear error states for users? Network interactions must have retry/backoff.
+
+**Simplicity, Incremental Change & Semantic Versioning**: Is the approach the simplest solution? Changes should be incremental with semantic versioning for public interfaces.
+
+**Spec-Driven Development**: Does this follow the spec-driven workflow (spec → plan → tasks → implement) with all phases documented?
 
 ## Project Structure
 

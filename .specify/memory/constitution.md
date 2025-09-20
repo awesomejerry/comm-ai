@@ -8,13 +8,13 @@ Sync Impact Report
 - Added sections: none (principles extended only)
 - Removed sections: none
 - Templates updated:
-   - `.specify/templates/plan-template.md` ✅ updated (convention footer bumped to v1.1.0)
+   - `.specify/templates/plan-template.md` ✅ updated (Constitution Check section filled with gates based on principles)
    - `.specify/templates/spec-template.md` ✅ updated (convention footer bumped to v1.1.0)
    - `.specify/templates/tasks-template.md` ✅ updated (convention footer bumped to v1.1.0)
-   - `.specify/templates/agent-file-template.md` ⚠ pending (manual review recommended)
+   - `.specify/templates/agent-file-template.md` ✅ updated (placeholders filled with project information)
+   - `.github/copilot-instructions.md` ✅ updated (regenerated with current project data)
 - Follow‑up TODOs:
-    - Manual review of `agent-file-template.md` to remove any agent‑specific names and align with governance wording.
-    - Confirm if any design/system token references in templates should be centralized (optional)
+    - None - all templates now in sync with constitution v1.1.0
 
 -- End Sync Impact Report
 -->
