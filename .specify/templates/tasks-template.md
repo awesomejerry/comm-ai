@@ -125,3 +125,5 @@ Task: "Integration test auth in tests/integration/test_auth.py"
 - [ ] Parallel tasks truly independent
 - [ ] Each task specifies exact file path
 - [ ] No task modifies same file as another [P] task
+
+*Constitution reference: v1.1.0 (last amended 2025-09-20) — See `/memory/constitution.md`*

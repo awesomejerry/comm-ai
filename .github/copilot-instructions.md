@@ -1,5 +1,5 @@
-# [PROJECT NAME] Development Guidelines
-# [PROJECT NAME] Development Guidelines
+# comm-ai Development Guidelines
+# comm-ai Development Guidelines
 
 Auto-generated from feature plans. Last updated: [DATE: YYYY-MM-DD]
 
@@ -11,21 +11,22 @@ the `.specify` tooling (e.g., scripts that aggregate `plan.md` files). Keep the
 intact so manual edits are preserved across automated regenerations.
 
 ## Active Technologies
-[EXTRACTED FROM ALL PLAN.MD FILES]
+-  +  (002-re-design-the)
 
 ## Project Structure
 ```text
-[ACTUAL STRUCTURE FROM PLANS]
+src/
+tests/
 ```
 
 ## Commands
-[ONLY COMMANDS FOR ACTIVE TECHNOLOGIES]
+# Add commands for 
 
 ## Code Style
-[LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE]
+: Follow standard conventions
 
 ## Recent Changes
-[LAST 3 FEATURES AND WHAT THEY ADDED]
+- 002-re-design-the: Added  + 
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
@@ -37,24 +38,25 @@ intact so manual edits are preserved across automated regenerations.
 - Commands: only include commands a developer can run locally or in CI
 - Code Style: reference lint/format configs (eslint/prettier/ruff) if present
 -->
-Auto-generated from all feature plans. Last updated: [DATE]
+Auto-generated from all feature plans. Last updated: 2025-09-20
 
 ## Active Technologies
-[EXTRACTED FROM ALL PLAN.MD FILES]
+-  +  (002-re-design-the)
 
 ## Project Structure
 ```
-[ACTUAL STRUCTURE FROM PLANS]
+src/
+tests/
 ```
 
 ## Commands
-[ONLY COMMANDS FOR ACTIVE TECHNOLOGIES]
+# Add commands for 
 
 ## Code Style
-[LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE]
+: Follow standard conventions
 
 ## Recent Changes
-[LAST 3 FEATURES AND WHAT THEY ADDED]
+- 002-re-design-the: Added  + 
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
