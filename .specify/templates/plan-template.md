@@ -59,6 +59,8 @@
 
 **Spec-Driven Development**: Does this follow the spec-driven workflow (spec → plan → tasks → implement) with all phases documented?
 
+**Precise Commit Messages**: Will commits follow the one-line, descriptive format with appropriate type prefixes? Messages must be under 72 characters and imperative.
+
 ## Project Structure
 
 ### Documentation (this feature)
@@ -218,4 +220,4 @@ ios/ or android/
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v1.1.0 (last amended 2025-09-20) - See `/memory/constitution.md`*
+*Based on Constitution v1.2.0 (last amended 2025-09-20) - See `/memory/constitution.md`*

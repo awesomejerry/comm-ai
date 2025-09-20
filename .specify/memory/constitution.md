@@ -1,20 +1,20 @@
 <!--
 Sync Impact Report
 
-- Version change: 1.0.0 → 1.1.0
+- Version change: 1.1.0 → 1.2.0
 - Modified principles:
-   - Added: "Spec‑Driven Development — Specification, Plan, Tasks, Implement"
-   - Existing principles retained: Test‑First; Contract & Integration Safety; Modular Library‑First; Observability; Simplicity & Semantic Versioning
-- Added sections: none (principles extended only)
+   - Added: "Precise Commit Messages — One-line, descriptive commits"
+   - Existing principles retained: Test‑First; Contract & Integration Safety; Modular Library‑First; Observability; Simplicity & Semantic Versioning; Spec‑Driven Development
+- Added sections: none
 - Removed sections: none
-- Templates updated:
-   - `.specify/templates/plan-template.md` ✅ updated (Constitution Check section filled with gates based on principles)
-   - `.specify/templates/spec-template.md` ✅ updated (convention footer bumped to v1.1.0)
-   - `.specify/templates/tasks-template.md` ✅ updated (convention footer bumped to v1.1.0)
-   - `.specify/templates/agent-file-template.md` ✅ updated (placeholders filled with project information)
-   - `.github/copilot-instructions.md` ✅ updated (regenerated with current project data)
+- Templates requiring updates:
+   - `.specify/templates/plan-template.md` ✅ updated (added new principle to Constitution Check)
+   - `.specify/templates/spec-template.md` ✅ updated (constitution reference bumped to v1.2.0)
+   - `.specify/templates/tasks-template.md` ✅ updated (constitution reference bumped to v1.2.0)
+   - `.specify/templates/agent-file-template.md` ✅ updated
+   - `.github/copilot-instructions.md` ✅ updated
 - Follow‑up TODOs:
-    - None - all templates now in sync with constitution v1.1.0
+    - None - all templates now in sync with constitution v1.2.0
 
 -- End Sync Impact Report
 -->
@@ -82,6 +82,15 @@ Rationale: A formal spec‑driven flow ensures clarity of scope, repeatable plan
 enables test‑first task generation. It ties together documentation, tests, and work items
 so reviewers can validate scope and safety before code is written.
 
+### 7. Precise Commit Messages — One-line, descriptive commits
+All commit messages MUST be short, precise, and descriptive in one line. They MUST
+clearly state what was changed and why, following the format: `type: description`.
+Common types include `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+Messages MUST NOT exceed 72 characters and MUST be written in imperative mood.
+
+Rationale: Clear, concise commit messages improve code history readability, enable
+better changelog generation, and facilitate efficient code review and debugging.
+
 ## Security & Privacy Requirements
 1. Sensitive data (microphone audio, evaluation results containing PII) MUST be transmitted
    over TLS. Storage of audio or evaluation results MUST be minimized and explicitly
@@ -117,4 +126,4 @@ Rationale: A disciplined workflow enforces the constitution and keeps the projec
 3. Compliance: Any PR that materially affects the constitution or governed areas MUST
    include updates to dependent templates and a short Sync Impact Report.
 
-**Version**: 1.1.0 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-09-20
+**Version**: 1.2.0 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-09-20
