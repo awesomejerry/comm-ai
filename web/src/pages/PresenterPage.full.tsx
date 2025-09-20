@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PdfViewer from '../components/PdfViewer'
 import { RecordingController } from '../recording/recordingController'
-import { uploadSegmentToWebhook } from '../services/uploader'
+import { UploaderQueue } from '../services/uploaderQueue'
 
 export default function PresenterPageFull() {
   const [file, setFile] = useState<File | undefined>()
@@ -9,8 +9,15 @@ export default function PresenterPageFull() {
   const [currentPage, setCurrentPage] = useState(1)
   const [segments, setSegments] = useState<any[]>([])
   const [isRecording, setIsRecording] = useState(false)
+  const [microphoneError, setMicrophoneError] = useState<string | null>(null)
 
   const rcRef = React.useRef<RecordingController | null>(null)
+  const uploaderQueueRef = React.useRef<UploaderQueue | null>(null)
+
+  // Initialize uploader queue
+  React.useEffect(() => {
+    uploaderQueueRef.current = new UploaderQueue('https://n8n.awesomejerry.space/webhook/commoon/upload-audio')
+  }, [])
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
@@ -18,21 +25,41 @@ export default function PresenterPageFull() {
   }
 
   function startRec() {
-    const rc = new RecordingController({ onSegmentReady: async (seg) => {
-      setSegments(s => [...s, { ...seg, state: 'queued' }])
-      try {
-        const res = await uploadSegmentToWebhook('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', { id: seg.id, blob: seg.blob, startSlide: seg.startSlide, endSlide: seg.endSlide })
-        setSegments(s => s.map(x => x.id === seg.id ? { ...x, state: 'evaluated', evaluation: res } : x))
-      } catch (err) {
-        setSegments(s => s.map(x => x.id === seg.id ? { ...x, state: 'failed' } : x))
+    setMicrophoneError(null) // Clear any previous errors
+    
+    const rc = new RecordingController({ 
+      onSegmentReady: async (seg) => {
+        setSegments(s => [...s, { ...seg, state: 'uploading' }])
+        
+        // Add segment to upload queue with retry mechanism
+        uploaderQueueRef.current?.addSegment({
+          id: seg.id,
+          blob: seg.blob,
+          startSlide: seg.startSlide,
+          endSlide: seg.endSlide,
+          onComplete: (result) => {
+            setSegments(s => s.map(x => x.id === seg.id ? { ...x, state: 'evaluated', evaluation: result } : x))
+          },
+          onError: (error) => {
+            setSegments(s => s.map(x => x.id === seg.id ? { ...x, state: 'failed', error: error.message } : x))
+          }
+        })
+      },
+      onError: (error) => {
+        setMicrophoneError(error.message)
+        setIsRecording(false)
       }
-    }})
-    rcRef.current = rc
-    rc.start(currentPage)
-    setIsRecording(true)
-  }
-
-  function pauseRec() {
+    })
+    
+    try {
+      rc.start(currentPage)
+      rcRef.current = rc
+      setIsRecording(true)
+    } catch (error) {
+      console.error('Failed to start recording:', error)
+      // Error handling is done in onError callback
+    }
+  }  function pauseRec() {
     rcRef.current?.pause(currentPage)
     setIsRecording(false)
   }
@@ -89,6 +116,25 @@ export default function PresenterPageFull() {
                     </div>
                   )}
                 </div>
+                
+                {microphoneError && (
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-red-800">Microphone Access Required</h3>
+                        <div className="mt-2 text-sm text-red-700">
+                          <p>{microphoneError}</p>
+                          <p className="mt-1">Please allow microphone access and try again.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -104,27 +150,76 @@ export default function PresenterPageFull() {
               ) : (
                 <ul className="space-y-3" role="list">
                   {segments.map(s => (
-                    <li key={s.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium text-gray-900">Segment {s.id}</span>
-                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                            s.state === 'evaluated' ? 'bg-green-100 text-green-800' :
-                            s.state === 'failed' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {s.state === 'evaluated' ? '✅ Evaluated' :
-                             s.state === 'failed' ? '❌ Failed' :
-                             '⏳ Pending'}
-                          </span>
-                        </div>
-                        <span className="text-sm text-gray-500">Slides {s.startSlide}-{s.endSlide}</span>
-                        {s.evaluation && (
-                          <div className="mt-2 p-2 bg-white rounded border text-sm">
-                            <div className="font-medium text-gray-700 mb-1">Evaluation:</div>
-                            <div className="text-gray-600 whitespace-pre-wrap">{JSON.stringify(s.evaluation, null, 2)}</div>
+                    <li key={s.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="font-medium text-gray-900">Segment {s.id}</span>
+                            <span className={`px-2 py-1 text-xs rounded-full font-medium whitespace-nowrap ${
+                              s.state === 'evaluated' ? 'bg-green-100 text-green-800' :
+                              s.state === 'failed' ? 'bg-red-100 text-red-800' :
+                              s.state === 'uploading' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {s.state === 'evaluated' ? '✅ Evaluated' :
+                               s.state === 'failed' ? '❌ Failed' :
+                               s.state === 'uploading' ? '⏳ Uploading...' :
+                               '⏳ Pending'}
+                            </span>
                           </div>
-                        )}
+                          <span className="text-sm text-gray-500 block mb-2">Slides {s.startSlide}-{s.endSlide}</span>
+                          
+                          {s.error && (
+                            <div className="flex items-center space-x-3 mb-3">
+                              <div className="text-sm text-red-600 flex-1">{s.error}</div>
+                              <button
+                                onClick={() => {
+                                  // Find the segment and retry it
+                                  const segment = uploaderQueueRef.current?.getSegmentById(s.id)
+                                  if (segment) {
+                                    uploaderQueueRef.current?.retryFailedSegments()
+                                    setSegments(prev => prev.map(x => 
+                                      x.id === s.id ? { ...x, state: 'queued', error: undefined } : x
+                                    ))
+                                  }
+                                }}
+                                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium shadow-sm"
+                              >
+                                🔄 Retry
+                              </button>
+                            </div>
+                          )}
+                          
+                          {s.evaluation && (
+                            <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
+                              <div className="font-medium text-gray-700 mb-2 flex items-center">
+                                <span className="text-green-600 mr-2">📊</span>
+                                Evaluation Result
+                              </div>
+                              <div className="space-y-2">
+                                {s.evaluation.input && (
+                                  <div>
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Input</div>
+                                    <div className="text-sm text-gray-700 mt-1">{s.evaluation.input}</div>
+                                  </div>
+                                )}
+                                {s.evaluation.output && (
+                                  <div>
+                                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Feedback</div>
+                                    <div className="text-sm text-gray-700 mt-1 bg-gray-50 p-2 rounded border-l-4 border-blue-400">
+                                      {s.evaluation.output}
+                                    </div>
+                                  </div>
+                                )}
+                                {!s.evaluation.input && !s.evaluation.output && (
+                                  <div className="text-sm text-gray-600">
+                                    <pre className="whitespace-pre-wrap text-xs">{JSON.stringify(s.evaluation, null, 2)}</pre>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </li>
                   ))}

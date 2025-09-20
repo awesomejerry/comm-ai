@@ -7,12 +7,22 @@ vi.mock('../../services/uploader', () => ({
   uploadSegmentToWebhook: vi.fn(() => Promise.resolve({ input: 'test', output: 'evaluation' }))
 }))
 
+// Mock the uploader queue
+vi.mock('../../services/uploaderQueue', () => ({
+  UploaderQueue: vi.fn().mockImplementation(() => ({
+    addSegment: vi.fn()
+  }))
+}))
+
 // Mock the recording controller
 vi.mock('../../recording/recordingController', () => ({
-  RecordingController: vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
+  RecordingController: vi.fn().mockImplementation(({ onError }) => ({
+    start: vi.fn(() => {
+      // Simulate successful start
+      return Promise.resolve()
+    }),
     pause: vi.fn(),
-    onSegmentReady: vi.fn()
+    onSegmentReady: undefined
   }))
 }))
 
@@ -77,7 +87,7 @@ describe('PresenterPage Integration', () => {
     const startButton = screen.getByRole('button', { name: 'Start recording' })
     fireEvent.click(startButton)
 
-    expect(screen.getByText('🔴 Recording in Progress')).toBeInTheDocument()
+    expect(screen.getByText('Recording...')).toBeInTheDocument()
   })
 
   it('stops recording when stop button is clicked', () => {
@@ -92,7 +102,7 @@ describe('PresenterPage Integration', () => {
     fireEvent.click(stopButton)
 
     // The recording indicator should be gone
-    expect(screen.queryByText('🔴 Recording in Progress')).not.toBeInTheDocument()
+    expect(screen.queryByText('Recording...')).not.toBeInTheDocument()
   })
 
   it('shows no segments initially', () => {

@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 
 export type RecordingControllerOptions = {
   onSegmentReady?: (segment: { id: string; blob: Blob; startSlide: number; endSlide: number }) => void
+  onError?: (error: Error) => void
 }
 
 export class RecordingController {
@@ -16,11 +17,18 @@ export class RecordingController {
 
   async start(startSlide?: number) {
     if (typeof startSlide === 'number') this.startSlide = startSlide
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    this.mediaRecorder = new MediaRecorder(stream)
-    this.chunks = []
-    this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data)
-    this.mediaRecorder.start()
+    
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      this.mediaRecorder = new MediaRecorder(stream)
+      this.chunks = []
+      this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data)
+      this.mediaRecorder.start()
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Microphone access denied'
+      this.options.onError?.(new Error(`Microphone permission denied: ${errorMessage}`))
+      throw error
+    }
   }
 
   pause(currentSlide: number) {

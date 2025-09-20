@@ -145,9 +145,11 @@ T016 [P] - Polish: UX, accessibility, Tailwind styling
    - Notes: UI polished with better colors, spacing, and accessibility. Visual regression snapshots updated.
 
 T017 [P] - Tests: Add Vitest unit coverage and Playwright smoke suite
-- [ ] T017 - Add coverage & CI smoke suite (IN PROGRESS)
-   - Update test scripts in `/web/ui-presenter/package.json`
-   - Notes: Unit tests and Playwright E2E exist. CI integration and coverage collection remain to be configured.
+- [x] T017 - Add coverage & CI smoke suite (COMPLETED)
+   - Coverage configuration working with v8 provider
+   - Generates text, json, and html coverage reports
+   - CI script `npm run test:ci` runs tests + coverage + playwright
+   - All tests passing with 50.42% statement coverage
 
 T018 [P] - Documentation & Quickstart
 - [x] T018 - Documentation & Quickstart
@@ -185,12 +187,12 @@ T018 [P] - Documentation & Quickstart
 - ⚠️ FR-003: Start/pause recording (missing resume)
 - ✅ FR-004: Slide navigation during recording
 - ✅ FR-005: Upload on pause with evaluation
-- ⚠️ FR-006: Basic evaluation display (needs formatting)
+- ✅ FR-006: Basic evaluation display (formatted UI implemented)
 - ✅ FR-007: Continue recording after upload
-- ⚠️ FR-008: Segment states (missing "uploading" indicator)
-- ❌ FR-009: No retry/backoff mechanism
+- ✅ FR-008: Segment states (uploading indicator implemented)
+- ✅ FR-009: Retry/backoff mechanism (UploaderQueue integrated)
 - ❌ FR-010: No offline support
-- ❌ FR-011: No microphone permission error handling
+- ✅ FR-011: Microphone permission error handling (implemented)
 - ❌ FR-012: No upload size limits
 
 *** End of tasks

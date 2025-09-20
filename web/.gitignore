@@ -2,3 +2,5 @@ node_modules/
 uploads/
 test-results/
 *-snapshots/
+dist/
+coverage/
