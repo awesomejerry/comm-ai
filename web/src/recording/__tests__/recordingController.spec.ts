@@ -6,6 +6,7 @@ describe('RecordingController', () => {
     // Mock MediaRecorder via global
     const chunks: any[] = [];
     class MockMediaRecorder {
+      static isTypeSupported = vi.fn(() => true);
       ondataavailable: any = null;
       onstop: any = null;
       start() {}

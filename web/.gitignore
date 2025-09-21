@@ -1,6 +1,7 @@
 node_modules/
 uploads/
 test-results/
-*-snapshots/
 dist/
 coverage/
+# Allow visual regression snapshots to be committed
+# *-snapshots/
