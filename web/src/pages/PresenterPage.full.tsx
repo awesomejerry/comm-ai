@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import PdfViewer from '../components/PdfViewer';
+import { AudioReview } from '../components/AudioReview';
 import { RecordingController } from '../recording/recordingController';
 import { UploaderQueue } from '../services/uploaderQueue';
+import type { RecordingState, Recording } from '../models/presentation';
 
 export default function PresenterPageFull() {
   const [file, setFile] = useState<File | undefined>();
@@ -11,6 +13,8 @@ export default function PresenterPageFull() {
   const [isRecording, setIsRecording] = useState(false);
   const [microphoneError, setMicrophoneError] = useState<string | null>(null);
   const [selectedAudience, setSelectedAudience] = useState<string>('');
+  const [recordingState, setRecordingState] = useState<RecordingState>('recording');
+  const [currentRecording, setCurrentRecording] = useState<Recording | null>(null);
 
   const rcRef = React.useRef<RecordingController | null>(null);
   const uploaderQueueRef = React.useRef<UploaderQueue | null>(null);
@@ -57,6 +61,17 @@ export default function PresenterPageFull() {
         setMicrophoneError(error.message);
         setIsRecording(false);
       },
+      onStateChange: (state) => {
+        setRecordingState(state);
+        if (rcRef.current) {
+          setCurrentRecording(rcRef.current.getCurrentRecording());
+        }
+        if (state === 'paused' || state === 'reviewed') {
+          setIsRecording(false);
+        } else if (state === 'recording') {
+          setIsRecording(true);
+        }
+      },
     });
 
     try {
@@ -71,6 +86,18 @@ export default function PresenterPageFull() {
   function pauseRec() {
     rcRef.current?.pause(currentPage);
     setIsRecording(false);
+  }
+
+  function confirmUpload() {
+    rcRef.current?.confirmUpload(currentPage);
+  }
+
+  function deleteRecording() {
+    rcRef.current?.deleteRecording();
+  }
+
+  function handlePlaybackComplete() {
+    rcRef.current?.review();
   }
 
   return (
@@ -185,6 +212,31 @@ export default function PresenterPageFull() {
                 )}
               </div>
             </section>
+
+            {/* Review Section */}
+            {(recordingState === 'paused' || recordingState === 'reviewed') && currentRecording && (
+              <section className="card">
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">Review Recording</h2>
+                <AudioReview
+                  audioBlob={currentRecording.audioBlob}
+                  onPlaybackComplete={handlePlaybackComplete}
+                />
+                <div className="mt-4 flex space-x-3">
+                  <button
+                    onClick={confirmUpload}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    ✅ Confirm & Upload
+                  </button>
+                  <button
+                    onClick={deleteRecording}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                    🗑️ Delete Recording
+                  </button>
+                </div>
+              </section>
+            )}
 
             {/* Segments List */}
             <section className="card">

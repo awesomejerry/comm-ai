@@ -1,0 +1,47 @@
+# Upload Audio Segment Contract
+
+## Endpoint
+- **URL**: https://n8n.awesomejerry.space/webhook/commoon/upload-audio
+- **Method**: POST
+- **Content-Type**: multipart/form-data
+
+## Request Body
+- `audio`: file - Audio blob (WebM format, filename: {id}.webm)
+- `startSlide`: number - Starting slide number
+- `endSlide`: number - Ending slide number
+- `audience` (optional): string - Audience identifier
+
+## Response
+- **Success (200)**: JSON object containing evaluation results
+- **Error (4xx/5xx)**: Error details
+
+## Contract Test
+```typescript
+// This test should fail until implementation exists
+test('upload segment contract', async () => {
+  // Mock fetch
+  const mockFetch = globalThis.fetch
+  globalThis.fetch = async (url: string | URL | Request, options?: RequestInit) => {
+    expect(url).toBe('https://n8n.awesomejerry.space/webhook/commoon/upload-audio')
+    expect(options?.method).toBe('POST')
+    const formData = options?.body as FormData
+    expect(formData.get('audio')).toBeInstanceOf(File)
+    expect(formData.get('startSlide')).toBe('1')
+    expect(formData.get('endSlide')).toBe('5')
+    return { ok: true, json: async () => ({ evaluation: 'mock result' }) } as Response
+  }
+
+  const blob = new Blob(['test audio'], { type: 'audio/webm' })
+  const result = await uploadSegmentToWebhook('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', {
+    id: 'test-segment-1',
+    blob,
+    startSlide: 1,
+    endSlide: 5
+  })
+
+  expect(result).toEqual({ evaluation: 'mock result' })
+
+  // Restore fetch
+  globalThis.fetch = mockFetch
+})
+```
