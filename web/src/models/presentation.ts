@@ -1,11 +1,11 @@
 export type Presentation = {
-  id: string
-  title?: string
-  pageCount: number
-  thumbnailCache?: Record<number, string>
-}
+  id: string;
+  title?: string;
+  pageCount: number;
+  thumbnailCache?: Record<number, string>;
+};
 
 export function validatePresentation(p: Presentation) {
-  if (!p || typeof p.pageCount !== 'number') return false
-  return p.pageCount >= 1
+  if (!p || typeof p.pageCount !== 'number') return false;
+  return p.pageCount >= 1;
 }

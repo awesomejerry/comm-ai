@@ -19,7 +19,7 @@ app.post('/api/evaluate', upload.single('audio'), (req, res) => {
       segmentId,
       score: Math.round(Math.random() * 100),
       feedback: 'Mock feedback for segment',
-      duration
+      duration,
     });
   }, 1200);
 });
@@ -27,7 +27,10 @@ app.post('/api/evaluate', upload.single('audio'), (req, res) => {
 // Simple file server for uploaded PDFs if needed
 app.post('/api/upload-pdf', upload.single('pdf'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'no file' });
-  res.json({ path: '/uploads/' + path.basename(req.file.path), originalName: req.file.originalname });
+  res.json({
+    path: '/uploads/' + path.basename(req.file.path),
+    originalName: req.file.originalname,
+  });
 });
 
 const port = process.env.PORT || 5173;

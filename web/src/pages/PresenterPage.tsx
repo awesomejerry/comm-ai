@@ -1,3 +1,3 @@
-import PresenterPageFull from './PresenterPage.full'
+import PresenterPageFull from './PresenterPage.full';
 
-export default PresenterPageFull
+export default PresenterPageFull;
