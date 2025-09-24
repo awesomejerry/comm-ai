@@ -114,5 +114,3 @@ When creating this spec from a user prompt:
 - [ ] Review checklist passed
 
 ---
-
-*Constitution reference: v1.2.0 (last amended 2025-09-20) — See `/memory/constitution.md`*
