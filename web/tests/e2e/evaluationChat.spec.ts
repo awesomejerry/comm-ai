@@ -88,7 +88,7 @@ test.describe('Evaluation Chat Display', () => {
 
   test('should display evaluation result in chat format', async ({ page }) => {
     // Mock the upload webhook to return evaluation data
-    await page.route('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', (route) => {
+    await page.route('https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -142,7 +142,7 @@ test.describe('Evaluation Chat Display', () => {
 
   test('should handle missing evaluation data', async ({ page }) => {
     // Mock the upload webhook to return malformed evaluation data
-    await page.route('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', (route) => {
+    await page.route('https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -189,7 +189,7 @@ test.describe('Evaluation Chat Display', () => {
 
   test('should be read-only with no interaction', async ({ page }) => {
     // Mock successful evaluation
-    await page.route('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', (route) => {
+    await page.route('https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',

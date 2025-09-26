@@ -3,7 +3,7 @@ info:
   title: Evaluation Webhook (inferred)
   version: '1.0'
 paths:
-  /webhook/commoon/upload-audio:
+  /webhook/comm-ai/upload-pitch:
     post:
       summary: Upload audio segment for evaluation
       requestBody:

@@ -23,7 +23,7 @@ export default function PresenterPageFull() {
   // Initialize uploader queue
   React.useEffect(() => {
     uploaderQueueRef.current = new UploaderQueue(
-      'https://n8n.awesomejerry.space/webhook/commoon/upload-audio'
+      'https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch'
     );
   }, []);
 

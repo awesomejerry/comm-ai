@@ -5,7 +5,7 @@ test('upload audio segment contract', async () => {
   // Mock fetch
   const mockFetch = globalThis.fetch;
   globalThis.fetch = async (url: string | URL | Request, options?: RequestInit) => {
-    expect(url).toBe('https://n8n.awesomejerry.space/webhook/commoon/upload-audio');
+    expect(url).toBe('https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch');
     expect(options?.method).toBe('POST');
     const formData = options?.body as FormData;
     const audioFile = formData.get('audio') as File;
@@ -18,7 +18,7 @@ test('upload audio segment contract', async () => {
 
   const blob = new Blob(['test audio'], { type: 'audio/webm' });
   const result = await uploadSegmentToWebhook(
-    'https://n8n.awesomejerry.space/webhook/commoon/upload-audio',
+    'https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch',
     {
       id: 'test-segment-1',
       blob,

@@ -3,7 +3,7 @@ info:
   title: Evaluation Result Webhook Response
   version: '1.0'
 paths:
-  /webhook/commoon/upload-audio:
+  /webhook/comm-ai/upload-pitch:
     post:
       summary: Receive evaluation result after audio upload
       responses:

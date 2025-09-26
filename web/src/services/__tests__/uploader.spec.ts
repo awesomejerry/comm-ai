@@ -16,7 +16,7 @@ describe('uploader', () => {
 
     const blob = new Blob(['a'], { type: 'audio/webm' });
     const res = await uploadSegmentToWebhook(
-      'https://n8n.awesomejerry.space/webhook/commoon/upload-audio',
+      'https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch',
       { id: 's1', blob, startSlide: 1, endSlide: 1 }
     );
     expect(res.input).toBe('ok');

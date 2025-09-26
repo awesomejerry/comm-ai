@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('record and upload flow (mocked)', async ({ page }) => {
   // Intercept the webhook and return a mock response
-  await page.route('https://n8n.awesomejerry.space/webhook/commoon/upload-audio', (route) => {
+  await page.route('https://n8n.awesomejerry.space/webhook/comm-ai/upload-pitch', (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
