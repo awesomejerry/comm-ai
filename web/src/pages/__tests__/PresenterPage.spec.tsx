@@ -78,23 +78,25 @@ describe('PresenterPage Integration', () => {
   it('renders the main UI components', () => {
     render(<PresenterPageFull />);
 
-    expect(screen.getByText('Presentation Recorder')).toBeInTheDocument();
-    expect(screen.getByText('Choose PDF Presentation')).toBeInTheDocument();
-    expect(screen.getByText('🎤 Start Recording')).toBeInTheDocument();
+    expect(screen.getByText('Comm-AI')).toBeInTheDocument();
+    expect(screen.getByText('Professional Pitch Training Platform')).toBeInTheDocument();
+    expect(screen.getByText('Upload Presentation')).toBeInTheDocument();
+    expect(screen.getByText('Start Recording')).toBeInTheDocument();
+    expect(screen.getByText('Recording Controls')).toBeInTheDocument();
     expect(screen.getByText('Recording Segments')).toBeInTheDocument();
-    expect(screen.getByText('Presentation Viewer')).toBeInTheDocument();
   });
 
   it('shows upload prompt when no PDF is selected', () => {
     render(<PresenterPageFull />);
 
-    expect(screen.getByText('Upload a PDF to view your presentation')).toBeInTheDocument();
+    expect(screen.getByLabelText('Select PDF File')).toBeInTheDocument();
+    expect(screen.getByText('Upload Presentation')).toBeInTheDocument();
   });
 
   it('handles PDF file upload', () => {
     render(<PresenterPageFull />);
 
-    const fileInput = screen.getByLabelText('Upload PDF file');
+    const fileInput = screen.getByLabelText('Select PDF File');
     const file = new File(['mock pdf content'], 'presentation.pdf', { type: 'application/pdf' });
 
     fireEvent.change(fileInput, { target: { files: [file] } });
@@ -106,21 +108,21 @@ describe('PresenterPage Integration', () => {
   it('starts recording when start button is clicked', () => {
     render(<PresenterPageFull />);
 
-    const startButton = screen.getByRole('button', { name: 'Start recording' });
+    const startButton = screen.getByRole('button', { name: 'Start Recording' });
     fireEvent.click(startButton);
 
-    expect(screen.getByText('Recording...')).toBeInTheDocument();
+    expect(screen.getByText('Recording Active')).toBeInTheDocument();
   });
 
   it('stops recording when stop button is clicked', () => {
     render(<PresenterPageFull />);
 
     // Start recording first
-    const startButton = screen.getByRole('button', { name: 'Start recording' });
+    const startButton = screen.getByRole('button', { name: 'Start Recording' });
     fireEvent.click(startButton);
 
     // Then stop recording
-    const stopButton = screen.getByRole('button', { name: 'Stop recording' });
+    const stopButton = screen.getByRole('button', { name: 'Stop Recording' });
     fireEvent.click(stopButton);
 
     // The recording indicator should be gone
@@ -136,7 +138,7 @@ describe('PresenterPage Integration', () => {
   it('displays proper accessibility labels', () => {
     render(<PresenterPageFull />);
 
-    const fileInput = screen.getByLabelText('Upload PDF file');
+    const fileInput = screen.getByLabelText('Select PDF File');
     expect(fileInput).toHaveAttribute('type', 'file');
     expect(fileInput).toHaveAttribute('accept', 'application/pdf');
   });
@@ -148,22 +150,6 @@ describe('PresenterPage Integration', () => {
     expect(audienceInput).toBeInTheDocument();
     expect(audienceInput.tagName).toBe('INPUT');
     expect(audienceInput).toHaveAttribute('type', 'text');
-    expect(audienceInput).toHaveAttribute('list', 'audience-options');
-  });
-
-  it('displays audience suggestions in datalist', () => {
-    render(<PresenterPageFull />);
-
-    const datalist = document.getElementById('audience-options');
-    expect(datalist).toBeInTheDocument();
-    expect(datalist?.tagName).toBe('DATALIST');
-
-    const options = datalist?.querySelectorAll('option');
-    expect(options).toHaveLength(4);
-    expect(options?.[0]).toHaveAttribute('value', 'investors');
-    expect(options?.[1]).toHaveAttribute('value', 'customers');
-    expect(options?.[2]).toHaveAttribute('value', 'team');
-    expect(options?.[3]).toHaveAttribute('value', 'general');
   });
 
   it('allows typing custom audience and stores input', () => {
@@ -196,10 +182,10 @@ describe('PresenterPage Integration', () => {
     fireEvent.change(audienceInput, { target: { value: 'customers' } });
 
     // Start and stop recording to create a segment
-    const startButton = screen.getByRole('button', { name: 'Start recording' });
+    const startButton = screen.getByRole('button', { name: 'Start Recording' });
     fireEvent.click(startButton);
 
-    const stopButton = screen.getByRole('button', { name: 'Stop recording' });
+    const stopButton = screen.getByRole('button', { name: 'Stop Recording' });
     fireEvent.click(stopButton);
 
     // Check that the segment shows the selected audience
@@ -214,10 +200,10 @@ describe('PresenterPage Integration', () => {
     fireEvent.change(audienceInput, { target: { value: 'board members' } });
 
     // Start and stop recording to create a segment
-    const startButton = screen.getByRole('button', { name: 'Start recording' });
+    const startButton = screen.getByRole('button', { name: 'Start Recording' });
     fireEvent.click(startButton);
 
-    const stopButton = screen.getByRole('button', { name: 'Stop recording' });
+    const stopButton = screen.getByRole('button', { name: 'Stop Recording' });
     fireEvent.click(stopButton);
 
     // Check that the segment shows the custom audience

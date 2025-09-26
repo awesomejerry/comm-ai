@@ -122,7 +122,7 @@ export const AudioReview: React.FC<AudioReviewProps> = ({ audioBlob, onPlaybackC
       <div className="flex items-center space-x-4">
         <button
           onClick={togglePlayPause}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-commAi-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           {isPlaying ? 'Pause' : 'Play'}
         </button>
@@ -130,7 +130,7 @@ export const AudioReview: React.FC<AudioReviewProps> = ({ audioBlob, onPlaybackC
         <div className="flex-1">
           <div className="bg-gray-200 rounded-full h-2">
             <div
-              className="bg-blue-500 h-2 rounded-full"
+              className="bg-commAi-primary h-2 rounded-full"
               style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
             />
           </div>

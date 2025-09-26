@@ -91,7 +91,7 @@ export default function PdfViewer({
           <button
             onClick={prev}
             disabled={pageNum <= 1}
-            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-commAi-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Previous page"
           >
             ← Previous
@@ -99,7 +99,7 @@ export default function PdfViewer({
           <button
             onClick={next}
             disabled={!doc || pageNum >= doc.numPages}
-            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-commAi-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Next page"
           >
             Next →

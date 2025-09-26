@@ -12,5 +12,5 @@ test('record and upload flow (mocked)', async ({ page }) => {
 
   await page.goto('/');
   // interactions would go here; for now just assert page loads
-  await expect(page.locator('text=Presentation Recorder')).toBeVisible();
+  await expect(page.locator('text=Comm-AI')).toBeVisible();
 });

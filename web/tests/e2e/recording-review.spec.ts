@@ -105,7 +105,7 @@ test.describe('Audio Recording Review', () => {
     await page.locator('button:has-text("Start Recording")').click();
 
     // Wait for recording to start
-    await expect(page.locator('text=Recording...')).toBeVisible();
+    await expect(page.locator('text=Recording Active')).toBeVisible();
 
     // Pause recording
     await page.locator('button:has-text("Stop Recording")').click();
@@ -129,7 +129,7 @@ test.describe('Audio Recording Review', () => {
     // Load PDF and start recording
     await page.locator('input[type="file"]').setInputFiles('tests/e2e/test-data/sample.pdf');
     await page.locator('button:has-text("Start Recording")').click();
-    await expect(page.locator('text=Recording...')).toBeVisible();
+    await expect(page.locator('text=Recording Active')).toBeVisible();
 
     // Pause and review
     await page.locator('button:has-text("Stop Recording")').click();
@@ -149,7 +149,7 @@ test.describe('Audio Recording Review', () => {
     // Load PDF and start recording
     await page.locator('input[type="file"]').setInputFiles('tests/e2e/test-data/sample.pdf');
     await page.locator('button:has-text("Start Recording")').click();
-    await expect(page.locator('text=Recording...')).toBeVisible();
+    await expect(page.locator('text=Recording Active')).toBeVisible();
 
     // Pause and review
     await page.locator('button:has-text("Stop Recording")').click();

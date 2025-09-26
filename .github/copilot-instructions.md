@@ -11,6 +11,9 @@ intact so manual edits are preserved across automated regenerations.
 
 ## Active Technologies
 
+- TypeScript 5.x, Node.js + React 18, Vite, Tailwind CSS, pdf.js (004-apply-branding-to)
+- N/A (UI/branding changes only) (004-apply-branding-to)
+
 - TypeScript 5.x
 - Node.js
 - React 18
@@ -62,9 +65,10 @@ specs/
 
 ## Recent Changes
 
-- 001-create-a-web: Created web application with PDF presenter, audio recording, and evaluation webhook integration
+- 004-apply-branding-to: Applied Comm-AI branding with custom color scheme and modern responsive UI
+- 003-audio-recording-review: Added audio review functionality before uploading recordings
 - 002-re-design-the: Complete UI redesign for professional, user-friendly interface
-- 003-audio-recording-review: Audio recording review before uploading feature
+- 001-create-a-web: Created web application with PDF presenter, audio recording, and evaluation webhook integration
 
 <!-- MANUAL ADDITIONS START -->
 
