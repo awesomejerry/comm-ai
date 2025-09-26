@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: Evaluation Result Webhook Response
+  version: '1.0'
+paths:
+  /webhook/commoon/upload-audio:
+    post:
+      summary: Receive evaluation result after audio upload
+      responses:
+        '200':
+          description: Evaluation completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  input:
+                    type: string
+                    description: SRT formatted transcript content
+                  output:
+                    type: string
+                    description: AI generated text response content
+                required: [input, output]

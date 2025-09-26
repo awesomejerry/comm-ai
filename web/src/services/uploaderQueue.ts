@@ -25,6 +25,18 @@ export class UploaderQueue {
     private readonly defaultMaxRetries = 3
   ) {}
 
+  private validateEvaluationResult(result: any): void {
+    if (!result || typeof result !== 'object') {
+      throw new Error('Evaluation result must be an object');
+    }
+    if (typeof result.input !== 'string' || typeof result.output !== 'string') {
+      throw new Error('Evaluation result must have input and output as strings');
+    }
+    if (!result.input.trim() || !result.output.trim()) {
+      throw new Error('Evaluation result input and output must be non-empty');
+    }
+  }
+
   addSegment(segment: Omit<QueuedSegment, 'retryCount' | 'maxRetries' | 'status'>): void {
     const queuedSegment: QueuedSegment = {
       ...segment,
@@ -75,6 +87,9 @@ export class UploaderQueue {
         endSlide: segment.endSlide,
         audience: segment.audience,
       });
+
+      // Validate evaluation result format
+      this.validateEvaluationResult(result);
 
       segment.status = 'completed';
       segment.onComplete?.(result);

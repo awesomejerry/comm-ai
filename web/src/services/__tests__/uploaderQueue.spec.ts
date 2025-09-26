@@ -36,7 +36,11 @@ describe('UploaderQueue', () => {
   });
 
   it('processes pending segments automatically', async () => {
-    mockUpload.mockResolvedValue({ success: true });
+    mockUpload.mockResolvedValue({
+      id: 'seg-1',
+      input: 'test transcript',
+      output: 'test response',
+    });
 
     const blob = new Blob(['test']);
     queue.addSegment({
@@ -58,7 +62,11 @@ describe('UploaderQueue', () => {
   });
 
   it('can clear completed segments', async () => {
-    mockUpload.mockResolvedValue({ success: true });
+    mockUpload.mockResolvedValue({
+      id: 'seg-1',
+      input: 'test transcript',
+      output: 'test response',
+    });
 
     const blob = new Blob(['test']);
     queue.addSegment({
@@ -80,7 +88,12 @@ describe('UploaderQueue', () => {
 
   it('calls onComplete callback when upload succeeds', async () => {
     const onComplete = vi.fn();
-    mockUpload.mockResolvedValue({ evaluation: 'good' });
+    mockUpload.mockResolvedValue({
+      id: 'seg-1',
+      input: 'test transcript',
+      output: 'test response',
+      evaluation: 'good',
+    });
 
     const blob = new Blob(['test']);
     queue.addSegment({
@@ -93,7 +106,12 @@ describe('UploaderQueue', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 10));
 
-    expect(onComplete).toHaveBeenCalledWith({ evaluation: 'good' });
+    expect(onComplete).toHaveBeenCalledWith({
+      id: 'seg-1',
+      input: 'test transcript',
+      output: 'test response',
+      evaluation: 'good',
+    });
   });
 
   it('handles upload failures', async () => {

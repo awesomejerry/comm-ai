@@ -109,7 +109,7 @@ export class RecordingController {
   }
 
   confirmUpload(currentSlide: number) {
-    if (this.state !== 'reviewed' || !this.currentRecording) return;
+    if ((this.state !== 'reviewed' && this.state !== 'paused') || !this.currentRecording) return;
     this.currentRecording.state = 'uploaded';
     this.options.onSegmentReady?.({
       id: this.currentRecording.id,

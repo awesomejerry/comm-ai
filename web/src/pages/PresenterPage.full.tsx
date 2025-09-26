@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PdfViewer from '../components/PdfViewer';
 import { AudioReview } from '../components/AudioReview';
+import { EvaluationChat } from '../components/EvaluationChat';
 import { RecordingController } from '../recording/recordingController';
 import { UploaderQueue } from '../services/uploaderQueue';
 import type { RecordingState, Recording } from '../models/presentation';
@@ -236,6 +237,7 @@ export default function PresenterPageFull() {
                     {segments.map((s) => (
                       <li
                         key={s.id}
+                        data-testid={`segment-${s.id}`}
                         className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex items-start justify-between">
@@ -295,10 +297,14 @@ export default function PresenterPageFull() {
                               </div>
                             )}
                             {s.evaluation && (
-                              <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
-                                <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                                  {JSON.stringify(s.evaluation, null, 2)}
-                                </pre>
+                              <div className="mt-3">
+                                <EvaluationChat
+                                  evaluation={{
+                                    id: s.id,
+                                    input: s.evaluation.input,
+                                    output: s.evaluation.output,
+                                  }}
+                                />
                               </div>
                             )}
                           </div>
