@@ -26,5 +26,4 @@
 
 ## State Transitions
 
-- N/A (static UI elements)</content>
-  <parameter name="filePath">/home/jerry/workspace/comm-ai/specs/004-apply-branding-to/data-model.md
+- N/A (static UI elements)

@@ -94,5 +94,4 @@ Task: "Integration test for displaying evaluation as chat in web/tests/e2e/evalu
 - [P] tasks = different files, no dependencies
 - Verify tests fail before implementing
 - Commit after each task following constitution
-- Use existing stack: React, TypeScript, Tailwind CSS</content>
-  <parameter name="filePath">/home/jerry/workspace/comm-ai/specs/005-users-can-see/tasks.md
+- Use existing stack: React, TypeScript, Tailwind CSS

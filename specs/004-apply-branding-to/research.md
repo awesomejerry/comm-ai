@@ -65,5 +65,4 @@
 
 **Rationale**: Standard web performance expectations.
 
-**Alternatives Considered**: Stricter goals - not necessary for UI changes.</content>
-<parameter name="filePath">/home/jerry/workspace/comm-ai/specs/004-apply-branding-to/research.md
+**Alternatives Considered**: Stricter goals - not necessary for UI changes.

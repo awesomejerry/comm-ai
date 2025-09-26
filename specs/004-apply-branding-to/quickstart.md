@@ -20,5 +20,4 @@ This feature applies "Comm-AI" branding and revamps the UI to be modern, simple,
 
 - App loads with "Comm-AI" branding
 - Interface is responsive on mobile/tablet/desktop
-- Design appears modern and professional</content>
-  <parameter name="filePath">/home/jerry/workspace/comm-ai/specs/004-apply-branding-to/quickstart.md
+- Design appears modern and professional
