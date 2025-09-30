@@ -75,12 +75,13 @@ When creating this spec from a user prompt:
 
 ### Primary User Story
 
-As a presenter who has completed a presentation evaluation, I want to view the evaluation results in a chat-like format so that I can easily review the interaction between my inputs and the AI outputs.
+As a presenter who has completed a presentation evaluation, I want to view the evaluation results in a chat-like format displayed inline with each recording segment so that I can easily review the interaction between my inputs and the AI outputs in context.
 
 ### Acceptance Scenarios
 
-1. **Given** the evaluation process is complete, **When** the user navigates to the results page, **Then** the evaluation results are displayed in a chat interface with message bubbles, alternating input and output messages, and a scrollable conversation view.
-2. **Given** an evaluation result exists with input and output pairs, **When** the user views the chat, **Then** inputs appear as user messages with left-aligned bubbles and user avatar/icon, and outputs appear as AI messages with right-aligned bubbles and AI avatar/icon.
+1. **Given** a recording segment has been evaluated, **When** the user views the segments list, **Then** the evaluation results are displayed inline within the segment card in a chat interface format.
+2. **Given** an evaluation result exists with input and output pairs, **When** the user views the segment, **Then** inputs appear as user messages and outputs appear as AI messages in a chat-like bubble format.
+3. **Given** multiple segments have been evaluated, **When** the user views the segments list, **Then** each segment displays its own evaluation chat independently.
 
 ### Edge Cases
 
@@ -92,7 +93,7 @@ As a presenter who has completed a presentation evaluation, I want to view the e
 
 ### Functional Requirements
 
-- **FR-001**: System MUST display evaluation results in a chat-like interface.
+- **FR-001**: System MUST display evaluation results in a chat-like interface inline with each recording segment.
 - **FR-002**: Each evaluation result MUST consist of "input" and "output" pairs.
 - **FR-003**: "input" MUST be displayed as messages sent by users.
 - **FR-004**: "output" MUST be displayed as messages sent by AI.
@@ -101,6 +102,9 @@ As a presenter who has completed a presentation evaluation, I want to view the e
 - **FR-007**: Outputs MUST be pure text.
 - **FR-008**: Each evaluation result MUST contain exactly one input/output pair.
 - **FR-009**: The chat interface MUST be read-only, displaying messages without user interaction capabilities.
+- **FR-010**: System MUST display evaluation results within the segment card in the segments list.
+- **FR-011**: System MUST show evaluation status indicators (✅ Evaluated, ⏳ Uploading, ❌ Failed) on each segment.
+- **FR-012**: System MUST only display the evaluation chat interface when a segment has been successfully evaluated.
 
 ### Key Entities _(include if feature involves data)_
 

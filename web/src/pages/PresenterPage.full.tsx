@@ -153,8 +153,15 @@ export default function PresenterPageFull() {
                       value={selectedAudience}
                       onChange={(e) => setSelectedAudience(e.target.value)}
                       placeholder="e.g., investors, customers"
+                      list="audience-options"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-commAi-primary focus:border-commAi-primary"
                     />
+                    <datalist id="audience-options">
+                      <option value="Investors" />
+                      <option value="Customers" />
+                      <option value="Team" />
+                      <option value="General" />
+                    </datalist>
                   </div>
                   <button
                     onClick={isRecording ? pauseRec : startRec}

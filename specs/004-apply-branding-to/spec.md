@@ -75,10 +75,12 @@ As a user of the Comm-AI pitch training web app, I want the interface to be bran
 
 ### Acceptance Scenarios
 
-1. **Given** the app is loaded, **When** I view the interface, **Then** it displays "Comm-AI" branding prominently and has a modern, professional design.
-2. **Given** the current user interface, **When** the revamp is applied, **Then** the new interface is totally different, embracing simplicity and being more intuitive.
-3. **Given** a PDF is uploaded, **When** I view the interface on desktop, **Then** the recording controls appear on the left and the presentation preview appears on the right.
-4. **Given** the interface layout, **When** viewed on different screen sizes, **Then** the layout adapts responsively with columns stacking on mobile devices.
+1. **Given** the app is loaded, **When** I view the interface, **Then** it displays "Comm-AI" branding prominently in the header with the tagline "Professional Pitch Training Platform" and has a modern, professional design.
+2. **Given** the current user interface, **When** the revamp is applied, **Then** the new interface uses card-based layout with rounded corners, shadows, and ample spacing for a clean, modern appearance.
+3. **Given** a user is actively recording, **When** I view the interface, **Then** a visual recording indicator appears showing "Recording Active" with an animated pulse effect.
+4. **Given** a PDF is uploaded, **When** I view the interface on desktop, **Then** the recording controls appear on the left in an auto-sized column and the presentation preview appears on the right taking the remaining space.
+5. **Given** the interface layout, **When** viewed on different screen sizes, **Then** the layout adapts responsively with columns stacking vertically on mobile devices.
+6. **Given** the main content, **When** displayed on screen, **Then** it uses 80% of the screen width (4/5) for optimal space utilization.
 
 ### Edge Cases
 
@@ -93,11 +95,13 @@ As a user of the Comm-AI pitch training web app, I want the interface to be bran
 
 ### Functional Requirements
 
-- **FR-001**: System MUST display "Comm-AI" branding prominently in the interface
-- **FR-002**: System MUST have an appealing visual theme suitable for professional pitch training
-- **FR-003**: System MUST embrace simplicity in its design elements and layout
-- **FR-004**: System MUST utilize modern design principles (e.g., clean typography, ample whitespace, consistent spacing)
+- **FR-001**: System MUST display "Comm-AI" branding prominently in the header with the tagline "Professional Pitch Training Platform"
+- **FR-002**: System MUST have an appealing visual theme suitable for professional pitch training using a custom color scheme
+- **FR-003**: System MUST embrace simplicity in its design elements and layout using card-based components
+- **FR-004**: System MUST utilize modern design principles including rounded corners, subtle shadows, ample whitespace, and consistent spacing
 - **FR-005**: System MUST provide a user interface that is totally different from the current implementation
+- **FR-012**: System MUST display a visual recording indicator with animated pulse effect when recording is active
+- **FR-013**: System MUST organize content into distinct card sections for PDF upload, recording controls, review section, and segments list
 - **FR-006**: System MUST be intuitive and easy-to-use for users engaging in pitch training
 - **FR-007**: System MUST support fully responsive design for mobile, tablet, and desktop screen sizes
 - **FR-008**: System MUST display generic placeholder text or icons if branding elements fail to load
