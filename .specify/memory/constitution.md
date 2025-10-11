@@ -1,50 +1,61 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+
+- Version change: 2.1.1 → 2.1.2
+- Modified principles: none
+- Added sections: none
+- Removed sections: none
+- Templates requiring updates: none
+- Follow-up TODOs: none
+
+-->
+
+# Comm-AI Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Test-First (NON-NEGOTIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+All new functionality MUST begin with failing tests
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Precise Commit Messages
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Use one-line, descriptive commits following format `type: description` (feat:, fix:, docs:, refactor:, test:, chore:)
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Spec-Driven Development
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+Follow specification → plan → tasks → implement workflow
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Contract & Integration Safety
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Cover all external boundaries with contract tests
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Modular Design
+
+Prefer small, well-documented modules with clear interfaces
+
+## Security & Privacy Requirements
+
+1. Sensitive data (microphone audio, evaluation results containing PII) MUST be transmitted over TLS. Storage of audio or evaluation results MUST be minimized and explicitly documented; default behavior is NOT to persist audio beyond the session unless the user opts in.
+
+2. The UI MUST request and clearly explain microphone permissions before recording.
+
+3. Third-party services used for evaluation MUST have documented data handling and retention policies; any transfer of user audio to external providers MUST be approved by product and legal where required.
+
+Rationale: Recording audio is inherently sensitive; explicit user consent and clear handling rules are required to maintain trust and comply with privacy expectations.
+
+## Development Workflow
+
+1. Pull requests MUST include tests demonstrating behavior. CI MUST run unit, contract, and integration tests; a PR cannot be merged unless all CI gates pass and at least one reviewer approves.
+
+2. Code review SHOULD focus on behavior, tests, and API surface. Complexity increases MUST include a short justification and a plan to reduce complexity later.
+
+3. Release flow: merge to main → CI builds artifacts and runs full test suite → publish releases with CHANGELOG entries that document breaking changes and migration steps.
+
+Rationale: A disciplined workflow enforces the constitution and keeps the project maintainable.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Constitution supersedes all other practices; Amendments require documentation, approval, migration plan
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 2.1.2 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-11
