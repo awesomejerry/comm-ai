@@ -5,3 +5,18 @@ dist/
 coverage/
 # Allow visual regression snapshots to be committed
 # *-snapshots/
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+# Node.js
+build/
+*.log
+.env*
+!.env.example
+
+.auth-storage.json

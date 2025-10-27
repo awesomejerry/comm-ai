@@ -11,6 +11,8 @@ intact so manual edits are preserved across automated regenerations.
 
 ## Active Technologies
 - N/A (display-only feature) (005-users-can-see)
+- TypeScript 5.x, Node.js (latest LTS), React 18 + Supabase JS client, Supabase Auth, React, Vite, Tailwind CSS (006-users-can-log)
+- Supabase Postgres (managed by Supabase) (006-users-can-log)
 
 - TypeScript 5.x, Node.js + React 18, Vite, Tailwind CSS, pdf.js (004-apply-branding-to)
 - N/A (UI/branding changes only) (004-apply-branding-to)
@@ -65,10 +67,10 @@ specs/
 : Follow standard conventions
 
 ## Recent Changes
+- 006-users-can-log: Added TypeScript 5.x, Node.js (latest LTS), React 18 + Supabase JS client, Supabase Auth, React, Vite, Tailwind CSS
 - 005-users-can-see: Added TypeScript 5.x, Node.js + React 18, Vite, Tailwind CSS, pdf.js
 
 - 004-apply-branding-to: Applied Comm-AI branding with custom color scheme and modern responsive UI
-- 003-audio-recording-review: Added audio review functionality before uploading recordings
 
 <!-- MANUAL ADDITIONS START -->
 

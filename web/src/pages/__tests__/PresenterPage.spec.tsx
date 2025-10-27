@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PresenterPageFull from '../../pages/PresenterPage.full';
+import { AuthProvider } from '../../components/AuthProvider';
+import { BrowserRouter } from 'react-router-dom';
+import type { ReactElement } from 'react';
 
 // Mock the uploader
 vi.mock('../../services/uploader', () => ({
@@ -69,6 +72,13 @@ vi.mock('pdfjs-dist/legacy/build/pdf', () => ({
 vi.mock('pdfjs-dist/build/pdf.worker.min.js?url', () => ({
   default: 'mock-worker-url',
 }));
+function renderWithProviders(ui: ReactElement) {
+  return render(
+    <BrowserRouter>
+      <AuthProvider>{ui}</AuthProvider>
+    </BrowserRouter>
+  );
+}
 
 describe('PresenterPage Integration', () => {
   beforeEach(() => {
@@ -76,7 +86,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('renders the main UI components', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     expect(screen.getByText('Comm-AI')).toBeInTheDocument();
     expect(screen.getByText('Professional Pitch Training Platform')).toBeInTheDocument();
@@ -87,14 +97,14 @@ describe('PresenterPage Integration', () => {
   });
 
   it('shows upload prompt when no PDF is selected', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     expect(screen.getByLabelText('Select PDF File')).toBeInTheDocument();
     expect(screen.getByText('Upload Presentation')).toBeInTheDocument();
   });
 
   it('handles PDF file upload', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const fileInput = screen.getByLabelText('Select PDF File');
     const file = new File(['mock pdf content'], 'presentation.pdf', { type: 'application/pdf' });
@@ -106,7 +116,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('starts recording when start button is clicked', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const startButton = screen.getByRole('button', { name: 'Start Recording' });
     fireEvent.click(startButton);
@@ -115,7 +125,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('stops recording when stop button is clicked', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     // Start recording first
     const startButton = screen.getByRole('button', { name: 'Start Recording' });
@@ -130,13 +140,13 @@ describe('PresenterPage Integration', () => {
   });
 
   it('shows no segments initially', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     expect(screen.getByText('No segments recorded yet')).toBeInTheDocument();
   });
 
   it('displays proper accessibility labels', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const fileInput = screen.getByLabelText('Select PDF File');
     expect(fileInput).toHaveAttribute('type', 'file');
@@ -144,7 +154,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('renders audience selection input field', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const audienceInput = screen.getByLabelText('Target Audience');
     expect(audienceInput).toBeInTheDocument();
@@ -153,7 +163,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('allows typing custom audience and stores input', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement;
 
@@ -164,7 +174,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('allows selecting from datalist suggestions', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement;
 
@@ -175,7 +185,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('shows selected audience in recording segments', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     // Select audience first
     const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement;
@@ -193,7 +203,7 @@ describe('PresenterPage Integration', () => {
   });
 
   it('shows custom typed audience in recording segments', () => {
-    render(<PresenterPageFull />);
+    renderWithProviders(<PresenterPageFull />);
 
     // Type custom audience
     const audienceInput = screen.getByLabelText('Target Audience') as HTMLInputElement;

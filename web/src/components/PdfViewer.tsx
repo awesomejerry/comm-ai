@@ -1,12 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-// Vite: import the worker as a URL so it is served/bundled by the dev server/build
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import workerEntry from 'pdfjs-dist/build/pdf.worker.mjs?worker';
 
-// Assign the worker URL provided by Vite (ensures bundler-served worker and matching version)
-(pdfjsLib as any).GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// pdfjs-dist v5+: Use Worker instance for the workerPort (only if Worker is available)
+if (typeof Worker !== 'undefined' && !(pdfjsLib as any).GlobalWorkerOptions.workerPort) {
+  (pdfjsLib as any).GlobalWorkerOptions.workerPort = new workerEntry();
+}
 
 export default function PdfViewer({
   file,

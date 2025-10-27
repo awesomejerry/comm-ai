@@ -5,8 +5,13 @@ import { EvaluationChat } from '../components/EvaluationChat';
 import { RecordingController } from '../recording/recordingController';
 import { UploaderQueue } from '../services/uploaderQueue';
 import type { RecordingState, Recording } from '../models/presentation';
+import { useAuth } from '../components/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import LogoutButton from '../components/LogoutButton';
 
 export default function PresenterPageFull() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [file, setFile] = useState<File | undefined>();
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,8 +110,21 @@ export default function PresenterPageFull() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="w-4/5 mx-auto">
         <header className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-commAi-primary mb-2">Comm-AI</h1>
-          <p className="text-gray-600">Professional Pitch Training Platform</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-commAi-primary mb-2">Comm-AI</h1>
+              <p className="text-gray-600">Professional Pitch Training Platform</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              {/* Show logout if authenticated */}
+              {user && (
+                <div className="inline-block">
+                  <span className="text-sm text-gray-700 mr-2">{user.email}</span>
+                  <LogoutButton />
+                </div>
+              )}
+            </div>
+          </div>
           {isRecording && (
             <div className="mt-4 inline-flex items-center bg-red-50 px-4 py-2 rounded-full">
               <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mr-2"></div>

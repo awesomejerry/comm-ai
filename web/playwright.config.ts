@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
@@ -10,5 +11,21 @@ export default defineConfig({
     timeout: 120000,
     reuseExistingServer: !process.env.CI,
   },
-  use: { baseURL: 'http://localhost:5173' },
+  use: {
+    baseURL: 'http://localhost:5173',
+    storageState: './tests/e2e/.auth-storage.json',
+  },
+  globalSetup: './tests/e2e/global-setup.ts',
+  // Exclude authentication tests from using the storage state
+  projects: [
+    {
+      name: 'e2e',
+      testMatch: /^(?!.*auth).*\.spec\.ts$/,
+    },
+    {
+      name: 'auth',
+      testMatch: /auth.*\.spec\.ts$/,
+      use: { storageState: undefined },
+    },
+  ],
 });

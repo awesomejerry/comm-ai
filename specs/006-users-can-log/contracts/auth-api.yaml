@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Supabase Email Magic Link Auth API
+  version: 1.0.0
+  description: API contract for passwordless email login using Supabase Auth
+servers:
+  - url: https://<project>.supabase.co/auth/v1
+paths:
+  /otp:
+    post:
+      summary: Request magic link (OTP) for email login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '200':
+          description: Magic link sent (or generic message)
+        '400':
+          description: Invalid email or rate limit exceeded
+        '404':
+          description: Email not registered (generic message)
+  /user:
+    get:
+      summary: Get current user session
+      responses:
+        '200':
+          description: User session info
+        '401':
+          description: Not authenticated
