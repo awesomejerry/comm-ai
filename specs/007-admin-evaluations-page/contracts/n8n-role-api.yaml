@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: n8n Role API
+  description: n8n webhook endpoint for verifying user role (admin/user)
+  version: 1.0.0
+  contact:
+    name: Comm-AI Team
+
+servers:
+  - url: https://n8n.example.com
+    description: n8n production server
+
+paths:
+  /comm-ai/role:
+    get:
+      summary: Check user role
+      description: |
+        Verifies whether a user has admin or user role based on their email.
+        Used for access control to admin-only pages.
+      operationId: getUserRole
+      tags:
+        - Authentication
+      parameters:
+        - name: email
+          in: query
+          description: User's email address to check role for
+          required: true
+          schema:
+            type: string
+            format: email
+          example: admin@example.com
+      responses:
+        '200':
+          description: Successful response with user role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+              examples:
+                adminUser:
+                  summary: User with admin role
+                  value:
+                    role: "admin"
+                regularUser:
+                  summary: User with regular role
+                  value:
+                    role: "user"
+        '400':
+          description: Bad request - invalid or missing email parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingEmail:
+                  summary: Missing email parameter
+                  value:
+                    error: "Email parameter is required"
+                invalidEmail:
+                  summary: Invalid email format
+                  value:
+                    error: "Invalid email format"
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Authentication required"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "User not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Internal server error"
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Service temporarily unavailable"
+
+components:
+  schemas:
+    RoleResponse:
+      type: object
+      required:
+        - role
+      properties:
+        role:
+          type: string
+          enum: [user, admin]
+          description: User's role for access control
+          example: "admin"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Invalid request"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from Supabase authentication
+
+security:
+  - bearerAuth: []

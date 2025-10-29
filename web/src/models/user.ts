@@ -5,5 +5,5 @@ export interface User {
   created_at: string;
   email_confirmed_at?: string | null;
   last_sign_in_at?: string | null;
-  role: 'user';
+  role: 'user' | 'admin';
 }

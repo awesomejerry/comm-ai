@@ -326,8 +326,12 @@ export default function PresenterPageFull() {
                                 <EvaluationChat
                                   evaluation={{
                                     id: s.id,
+                                    created_at: new Date().toISOString(),
                                     input: s.evaluation.input,
                                     output: s.evaluation.output,
+                                    startSlide: null,
+                                    endSlide: null,
+                                    audience: null,
                                   }}
                                 />
                               </div>
