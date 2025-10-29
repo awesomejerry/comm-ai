@@ -1,11 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import workerEntry from 'pdfjs-dist/build/pdf.worker.mjs?worker';
 
-// pdfjs-dist v5+: Use Worker instance for the workerPort (only if Worker is available)
-if (typeof Worker !== 'undefined' && !(pdfjsLib as any).GlobalWorkerOptions.workerPort) {
-  (pdfjsLib as any).GlobalWorkerOptions.workerPort = new workerEntry();
-}
+// Configure the worker using CDN URL to avoid Vite worker build issues
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 export default function PdfViewer({
   file,
