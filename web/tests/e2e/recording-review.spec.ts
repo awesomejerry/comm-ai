@@ -94,7 +94,7 @@ test.describe('Audio Recording Review', () => {
       });
     });
 
-    await page.goto('/');
+    await page.goto('/#/');
   });
 
   test('pause recording and review audio', async ({ page }) => {

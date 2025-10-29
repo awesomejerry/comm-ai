@@ -4,6 +4,7 @@ import PdfViewer from '../PdfViewer';
 
 // Mock pdfjs-dist
 vi.mock('pdfjs-dist/legacy/build/pdf', () => ({
+  version: '3.11.174', // Mock version to prevent errors
   getDocument: vi.fn(() => ({
     promise: Promise.resolve({
       numPages: 3,

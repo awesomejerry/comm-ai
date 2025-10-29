@@ -15,7 +15,7 @@ const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
  * @returns The magic link URL.
  */
 export async function generateMagicLink(email: string): Promise<string> {
-  // Use the dev server URL for redirect
+  // Use the dev server URL for redirect (HashRouter uses hash-based routes)
   const redirectTo = 'http://localhost:5173/';
   const { data, error } = await admin.auth.admin.generateLink({
     type: 'magiclink',

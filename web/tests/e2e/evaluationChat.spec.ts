@@ -100,7 +100,7 @@ test.describe('Evaluation Chat Display', () => {
       });
     });
 
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:5173/#/');
 
     // Upload a PDF file first
     const fileInput = page.locator('input[type="file"]');
@@ -154,7 +154,7 @@ test.describe('Evaluation Chat Display', () => {
       });
     });
 
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:5173/#/');
 
     // Upload a PDF file first
     const fileInput = page.locator('input[type="file"]');
@@ -201,7 +201,7 @@ test.describe('Evaluation Chat Display', () => {
       });
     });
 
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:5173/#/');
 
     // Upload PDF
     const fileInput = page.locator('input[type="file"]');

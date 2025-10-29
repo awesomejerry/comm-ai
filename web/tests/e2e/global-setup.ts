@@ -8,7 +8,8 @@ async function globalSetup() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
   await loginWithMagicLink(page, TEST_EMAIL);
-  await page.waitForURL('http://localhost:5173/#');
+  // Wait for navigation to complete (auth URL has access_token in hash)
+  await page.waitForLoadState('networkidle');
   // Save storage state after login
   await page.context().storageState({ path: STORAGE_STATE });
   await browser.close();

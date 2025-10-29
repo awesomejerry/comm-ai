@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('UI responsiveness test', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/');
 
   // Test mobile viewport (375px) - should stack vertically
   await page.setViewportSize({ width: 375, height: 667 });

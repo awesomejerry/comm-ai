@@ -51,6 +51,7 @@ vi.mock('../../recording/recordingController', () => ({
 
 // Mock pdfjs-dist to avoid complex setup
 vi.mock('pdfjs-dist/legacy/build/pdf', () => ({
+  version: '3.11.174', // Mock version to prevent errors
   getDocument: vi.fn(() => ({
     promise: Promise.resolve({
       numPages: 3,
