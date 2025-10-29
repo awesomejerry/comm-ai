@@ -8,12 +8,11 @@ export async function requestMagicLink(
   try {
     const baseUrl =
       typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-    const options = redirectTo
-      ? {
-          emailRedirectTo: `${baseUrl}/#/login-redirect?redirectTo=${encodeURIComponent(redirectTo)}`,
-        }
-      : undefined;
-    const { error } = await supabase.auth.signInWithOtp({ email, options });
+    // Simply redirect to root - Supabase handles the auth tokens
+    const { error } = await supabase.auth.signInWithOtp({ 
+      email, 
+      options: { emailRedirectTo: baseUrl }
+    });
     if (!error) return { success: true };
     if (error.status === 400 && error.message.toLowerCase().includes('rate')) {
       return { success: false, rateLimited: true };
