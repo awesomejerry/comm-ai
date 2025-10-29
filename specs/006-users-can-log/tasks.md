@@ -65,7 +65,7 @@ description: "Task list for 'Users can log in through their email' (Supabase Aut
 - [x] T013 [P] [US1] Create login form UI in `web/src/components/LoginForm.tsx`
 - [x] T014 [P] [US1] Implement email magic link request logic in `web/src/services/authService.ts`
 - [x] T015 [P] [US1] Show generic message for all email delivery outcomes in `LoginForm.tsx` (UI must display: "Check your email for the login link. If you don't see it, check your spam folder or try again.", per FR-007)
-- [x] T016 [P] [US1] Handle magic link redirect and session in `web/src/pages/LoginRedirect.tsx`
+- [x] T016 [P] [US1] Handle magic link redirect and session (Supabase handles automatically via AuthProvider)
 - [x] T017 [P] [US1] Integrate Supabase session check in `web/src/services/authService.ts`
 - [x] T018 [P] [US1] Add rate limiting feedback (generic error) in `LoginForm.tsx`
 
@@ -112,7 +112,7 @@ description: "Task list for 'Users can log in through their email' (Supabase Aut
 ### Implementation for User Story 3
 
 - [ ] T030 [P] [US3] Invalidate previous login links on new request in `web/src/services/authService.ts`
-- [ ] T031 [P] [US3] Allow login from new device with valid link in `web/src/pages/LoginRedirect.tsx`
+- [ ] T031 [P] [US3] Allow login from new device with valid link (Supabase handles via AuthProvider)
 - [ ] T032 [P] [US3] Ensure only latest login link is valid (Supabase config or logic)
 
 **Checkpoint**: All user stories should now be independently functional

@@ -129,7 +129,6 @@ web/
 │   │
 │   ├── pages/               # Page components
 │   │   ├── AdminDashboardPage.tsx  # Admin evaluation dashboard
-│   │   ├── LoginRedirect.tsx       # Auth redirect handler
 │   │   ├── PresenterPage.tsx       # Main presenter interface
 │   │   ├── UnauthorizedPage.tsx    # Access denied page
 │   │   └── __tests__/              # Page unit tests

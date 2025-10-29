@@ -7,14 +7,10 @@ test.describe('Magic Link Login Flow', () => {
     await page.fill('input[type="email"]', 'testuser@example.com');
     await page.click('button[type="submit"]');
     await expect(page.locator('text=Check your email for the login link')).toBeVisible();
-    // Simulate clicking the magic link (mock or manual step in CI)
-    // await page.goto('/login-redirect?token=...');
-    // await expect(page.locator('text=Welcome')).toBeVisible();
-  });
-
-  test('Expired/invalid link shows error', async ({ page }) => {
-    await page.goto('/login-redirect?token=invalid');
-    await expect(page.locator('text=Invalid or expired link')).toBeVisible();
+    // Simulate clicking the magic link
+    // Magic link redirects to root with #access_token=... which Supabase handles automatically
+    // await page.goto('/#access_token=mock_token&...');
+    // await expect(page).toHaveURL('/');
   });
 
   test('Rate limiting triggers error', async ({ page }) => {
