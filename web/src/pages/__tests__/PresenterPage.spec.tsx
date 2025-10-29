@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PresenterPageFull from '../../pages/PresenterPage.full';
 import { AuthProvider } from '../../components/AuthProvider';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import type { ReactElement } from 'react';
 
 // Mock the uploader
@@ -74,9 +74,9 @@ vi.mock('pdfjs-dist/build/pdf.worker.min.js?url', () => ({
 }));
 function renderWithProviders(ui: ReactElement) {
   return render(
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>{ui}</AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

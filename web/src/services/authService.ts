@@ -10,7 +10,7 @@ export async function requestMagicLink(
       typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
     const options = redirectTo
       ? {
-          emailRedirectTo: `${baseUrl}/login-redirect?redirectTo=${encodeURIComponent(redirectTo)}`,
+          emailRedirectTo: `${baseUrl}/#/login-redirect?redirectTo=${encodeURIComponent(redirectTo)}`,
         }
       : undefined;
     const { error } = await supabase.auth.signInWithOtp({ email, options });
