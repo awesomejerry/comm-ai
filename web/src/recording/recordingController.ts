@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { Recording, RecordingState } from '../models/presentation';
+import type { PresentationMode } from '../models/presentMode';
 
 export type RecordingControllerOptions = {
   onSegmentReady?: (segment: {
@@ -7,6 +8,7 @@ export type RecordingControllerOptions = {
     blob: Blob;
     startSlide: number;
     endSlide: number;
+    mode?: PresentationMode;
   }) => void;
   onError?: (error: Error) => void;
   onStateChange?: (state: RecordingState) => void;
@@ -20,6 +22,7 @@ export class RecordingController {
   private startSlide: number = 1;
   private currentRecording: Recording | null = null;
   private state: RecordingState = 'recording';
+  private mode: PresentationMode = 'practice';
 
   constructor(options: RecordingControllerOptions = {}) {
     this.options = options;
@@ -49,8 +52,19 @@ export class RecordingController {
     return 'audio/webm';
   }
 
-  async start(startSlide?: number) {
-    if (typeof startSlide === 'number') this.startSlide = startSlide;
+  async start(options?: { slideNumber?: number; mode?: PresentationMode } | number) {
+    // Support both old API (number) and new API (object with mode)
+    if (typeof options === 'number') {
+      this.startSlide = options;
+      this.mode = 'practice';
+    } else if (options) {
+      if (typeof options.slideNumber === 'number') {
+        this.startSlide = options.slideNumber;
+      }
+      this.mode = options.mode || 'practice';
+    } else {
+      this.mode = 'practice';
+    }
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -63,13 +77,34 @@ export class RecordingController {
       this.mediaStream = stream;
       this.mediaRecorder = new MediaRecorder(stream, {
         mimeType: this.getSupportedMimeType(),
+        audioBitsPerSecond: 64000, // 64 kbps for both modes
       });
       this.chunks = [];
       this.mediaRecorder.ondataavailable = (e) => this.chunks.push(e.data);
+
+      // T041: Add error handler for recording failures mid-session
+      this.mediaRecorder.onerror = (event: Event) => {
+        const error = (event as any).error || new Error('Recording error occurred');
+        console.error('MediaRecorder error:', error);
+        this.stopMediaStream();
+        this.options.onError?.(new Error(`Recording failed: ${error.message || 'Unknown error'}`));
+      };
+
+      // T041: Monitor track endings (e.g., microphone disconnected)
+      stream.getTracks().forEach((track) => {
+        track.onended = () => {
+          console.warn('Media track ended unexpectedly');
+          this.stopMediaStream();
+          this.options.onError?.(
+            new Error('Microphone connection lost. Please check your device.')
+          );
+        };
+      });
+
       this.mediaRecorder.start(1000);
       this.state = 'recording';
       this.options.onStateChange?.(this.state);
-      console.log('Recording started');
+      console.log('Recording started in', this.mode, 'mode');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Microphone access denied';
       this.options.onError?.(new Error(`Microphone permission denied: ${errorMessage}`));
@@ -89,6 +124,7 @@ export class RecordingController {
       duration: 0, // Will be set when audio loads
       timestamp: new Date(),
       state: 'paused',
+      mode: this.mode,
     };
     this.state = 'paused';
     this.options.onStateChange?.(this.state);
@@ -116,6 +152,7 @@ export class RecordingController {
       blob: this.currentRecording.audioBlob,
       startSlide: this.startSlide,
       endSlide: currentSlide,
+      mode: this.mode,
     });
     this.stopMediaStream();
     this.state = 'uploaded';

@@ -6,6 +6,8 @@ export interface QueuedSegment {
   startSlide: number;
   endSlide: number;
   audience?: string;
+  mode?: 'practice' | 'present'; // T024: Support mode field
+  timestamps?: string; // T025: Support timestamps field (JSON string)
   retryCount: number;
   maxRetries: number;
   status: 'pending' | 'uploading' | 'failed' | 'completed';
@@ -86,6 +88,8 @@ export class UploaderQueue {
         startSlide: segment.startSlide,
         endSlide: segment.endSlide,
         audience: segment.audience,
+        mode: segment.mode, // T024: Pass mode field
+        timestamps: segment.timestamps, // T025: Pass timestamps field
       });
 
       // Validate evaluation result format

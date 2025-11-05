@@ -5,6 +5,9 @@ import { AuthProvider } from '../../components/AuthProvider';
 import { HashRouter } from 'react-router-dom';
 import type { ReactElement } from 'react';
 
+// Mock IndexedDB for RecordingPersistence
+import 'fake-indexeddb/auto';
+
 // Mock the uploader
 vi.mock('../../services/uploader', () => ({
   uploadSegmentToWebhook: vi.fn(() => Promise.resolve({ input: 'test', output: 'evaluation' })),

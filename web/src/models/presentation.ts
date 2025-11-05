@@ -6,6 +6,7 @@ export type Recording = {
   duration: number;
   timestamp: Date;
   state: RecordingState;
+  mode?: 'practice' | 'present'; // Present mode support
 };
 
 export type Presentation = {

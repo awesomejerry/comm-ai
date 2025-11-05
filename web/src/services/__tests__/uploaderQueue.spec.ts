@@ -182,4 +182,43 @@ describe('UploaderQueue', () => {
     // With maxConcurrentUploads = 2, both should be uploading
     expect(status.uploading).toBe(2);
   });
+
+  it('passes mode and timestamps to uploader (T024, T025)', async () => {
+    mockUpload.mockResolvedValue({
+      input: 'test',
+      output: 'result',
+    });
+
+    const blob = new Blob(['audio data']);
+    const timestampsJSON = JSON.stringify([
+      { slideNumber: 1, timestamp: 0 },
+      { slideNumber: 2, timestamp: 5000 },
+    ]);
+
+    queue.addSegment({
+      id: 'seg-1',
+      blob,
+      startSlide: 1,
+      endSlide: 2,
+      audience: 'Investors',
+      mode: 'present',
+      timestamps: timestampsJSON,
+    });
+
+    // Wait for upload to complete
+    await vi.waitFor(() => {
+      expect(mockUpload).toHaveBeenCalled();
+    });
+
+    // Verify uploader was called with mode and timestamps
+    expect(mockUpload).toHaveBeenCalledWith(uploadUrl, {
+      id: 'seg-1',
+      blob,
+      startSlide: 1,
+      endSlide: 2,
+      audience: 'Investors',
+      mode: 'present',
+      timestamps: timestampsJSON,
+    });
+  });
 });

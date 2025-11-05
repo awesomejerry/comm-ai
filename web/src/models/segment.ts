@@ -10,6 +10,25 @@ export type RecordingSegment = {
   evaluation?: any;
 };
 
+/**
+ * Slide Navigation Event
+ * Captures timestamp when user navigates to a different slide during present mode
+ */
+export interface SlideNavigationEvent {
+  timestamp: number; // Unix timestamp in milliseconds
+  slideNumber: number; // Slide index (0-based)
+  eventTime: Date; // Human-readable time
+}
+
+/**
+ * Collection of slide navigation events for a recording session
+ */
+export interface SlideTimestamps {
+  events: SlideNavigationEvent[];
+  sessionStart: number; // Unix timestamp when recording started
+  sessionStop?: number; // Unix timestamp when recording stopped (optional, set on stop)
+}
+
 export function validateSegment(s: Partial<RecordingSegment>) {
   if (!s.segmentId) return false;
   if (s.startSlide == null || s.endSlide == null) return false;

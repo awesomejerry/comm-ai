@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  title: Present Mode Evaluation Webhook (Extension)
+  description: Extended evaluation API contract for present mode recordings with timestamp tracking
+  version: '1.1'
+paths:
+  /webhook/comm-ai/upload-pitch:
+    post:
+      summary: Upload audio segment for evaluation (supports both practice and present modes)
+      description: |
+        Existing endpoint extended to support present mode evaluations.
+        Present mode requests include additional fields: mode and timestamps.
+        Backward compatible with practice mode (mode field optional, defaults to practice).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: Audio recording (64 kbps bitrate for present mode, variable for practice mode)
+                startSlide:
+                  type: integer
+                  description: Starting slide number (1-based index)
+                endSlide:
+                  type: integer
+                  description: Ending slide number (1-based index)
+                audience:
+                  type: string
+                  description: Target audience selection (e.g., "investors", "customers")
+                mode:
+                  type: string
+                  enum: [practice, present]
+                  description: Recording mode - "present" for present mode, "practice" (or omitted) for practice mode
+                  default: practice
+                timestamps:
+                  type: string
+                  description: |
+                    JSON-encoded array of slide navigation events (present mode only).
+                    Format: [{"slideIndex": 1, "timestamp": 0, "transitionType": "jump"}, ...]
+                    - slideIndex: destination slide number (1-based)
+                    - timestamp: milliseconds from recording start
+                    - transitionType: "next" | "previous" | "jump"
+              required:
+                - audio
+                - startSlide
+                - endSlide
+                - audience
+            examples:
+              presentMode:
+                summary: Present mode evaluation request
+                value:
+                  audio: <binary>
+                  startSlide: 1
+                  endSlide: 12
+                  audience: "investors"
+                  mode: "present"
+                  timestamps: '[{"slideIndex":1,"timestamp":0,"transitionType":"jump"},{"slideIndex":2,"timestamp":12340,"transitionType":"next"},{"slideIndex":3,"timestamp":45230,"transitionType":"next"}]'
+              practiceMode:
+                summary: Practice mode evaluation request (existing behavior)
+                value:
+                  audio: <binary>
+                  startSlide: 3
+                  endSlide: 5
+                  audience: "investors"
+      responses:
+        '200':
+          description: Evaluation result (format unchanged from existing API)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  input:
+                    type: string
+                    description: Transcribed audio input
+                  output:
+                    type: string
+                    description: Evaluation feedback/result
+                required:
+                  - input
+                  - output
+              examples:
+                success:
+                  summary: Successful evaluation response
+                  value:
+                    input: "Thank you for your time today. I'm excited to present our product..."
+                    output: "Strong opening. Consider adding more enthusiasm in your tone. Slide transitions were smooth with good pacing..."
+        '400':
+          description: Bad request (invalid payload, missing required fields, malformed timestamps JSON)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+        '500':
+          description: Internal server error (evaluation service failure)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+
+components:
+  schemas:
+    SlideNavigationEvent:
+      type: object
+      description: Single slide navigation event during present mode recording
+      properties:
+        slideIndex:
+          type: integer
+          minimum: 1
+          description: Destination slide number (1-based index)
+        timestamp:
+          type: integer
+          minimum: 0
+          description: Milliseconds from recording start
+        transitionType:
+          type: string
+          enum: [next, previous, jump]
+          description: Type of navigation action
+      required:
+        - slideIndex
+        - timestamp
+        - transitionType
+      example:
+        slideIndex: 3
+        timestamp: 45230
+        transitionType: "next"

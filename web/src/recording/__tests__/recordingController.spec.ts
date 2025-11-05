@@ -9,16 +9,27 @@ describe('RecordingController', () => {
       static isTypeSupported = vi.fn(() => true);
       ondataavailable: any = null;
       onstop: any = null;
+      onerror: any = null;
       start() {}
       stop() {
         if (this.onstop) this.onstop();
       }
     }
 
+    // Mock MediaStream with getTracks() for T041 error handling
+    const mockStream = {
+      getTracks: () => [
+        {
+          onended: null,
+          stop: vi.fn(),
+        },
+      ],
+    };
+
     // @ts-ignore
     global.MediaRecorder = MockMediaRecorder;
     // @ts-ignore
-    global.navigator = { mediaDevices: { getUserMedia: async () => ({}) } };
+    global.navigator = { mediaDevices: { getUserMedia: async () => mockStream } };
 
     const onReady = vi.fn();
     const rc = new RecordingController({ onSegmentReady: onReady });
@@ -39,15 +50,27 @@ describe('RecordingController', () => {
       static isTypeSupported = vi.fn(() => true);
       ondataavailable: any = null;
       onstop: any = null;
+      onerror: any = null;
       start() {}
       stop() {
         if (this.onstop) this.onstop();
       }
     }
+
+    // Mock MediaStream with getTracks() for T041 error handling
+    const mockStream = {
+      getTracks: () => [
+        {
+          onended: null,
+          stop: vi.fn(),
+        },
+      ],
+    };
+
     // @ts-ignore
     global.MediaRecorder = MockMediaRecorder;
     // @ts-ignore
-    global.navigator = { mediaDevices: { getUserMedia: async () => ({}) } };
+    global.navigator = { mediaDevices: { getUserMedia: async () => mockStream } };
 
     expect(rc.getState()).toBe('recording');
 
