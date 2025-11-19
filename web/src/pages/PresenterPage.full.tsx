@@ -848,7 +848,7 @@ export default function PresenterPageFull() {
                               <div className="mt-3">
                                 <EvaluationChat
                                   evaluation={{
-                                    id: s.id,
+                                    id: s.evaluation.id,
                                     created_at: new Date().toISOString(),
                                     input: s.evaluation.input,
                                     output: s.evaluation.output,

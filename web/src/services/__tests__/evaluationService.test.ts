@@ -110,14 +110,15 @@ describe('evaluationService', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       const promise = fetchEvaluations(2);
+      const expectation = expect(promise).rejects.toThrow(
+        'Failed to fetch evaluations after 2 attempts: Network error'
+      );
 
       // Fast-forward through both retry attempts
       await vi.advanceTimersByTimeAsync(1000); // First retry
       await vi.advanceTimersByTimeAsync(2000); // Second retry (final)
 
-      await expect(promise).rejects.toThrow(
-        'Failed to fetch evaluations after 2 attempts: Network error'
-      );
+      await expectation;
       expect(mockFetch).toHaveBeenCalledTimes(2);
 
       vi.useRealTimers();

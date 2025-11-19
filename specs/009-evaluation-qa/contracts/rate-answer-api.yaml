@@ -1,0 +1,217 @@
+openapi: 3.0.3
+info:
+  title: n8n Q&A Answer Rating API
+  description: n8n webhook endpoint for rating audio answers to Q&A questions
+  version: 1.0.0
+  contact:
+    name: Comm-AI Team
+
+servers:
+  - url: https://n8n.example.com
+    description: n8n production server
+
+paths:
+  /comm-ai/rate-answer:
+    post:
+      summary: Submit audio answer for rating
+      description: |
+        Submits an audio answer for a Q&A question and receives the rating in the same response.
+        Rating includes numeric score (0-100) and text feedback that are tied to the persisted answer id.
+        Audio file is uploaded directly as multipart/form-data and the service blocks until scoring completes.
+      operationId: rateAnswer
+      tags:
+        - Q&A Answers
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RateAnswerRequest'
+            examples:
+              validRequest:
+                summary: Valid answer submission
+                value:
+                  questionId: "7a3e8400-e29b-41d4-a716-446655440001"
+                  evaluationId: "550e8400-e29b-41d4-a716-446655440000"
+                  audioFile: "(binary audio data)"
+                  audioFormat: "webm"
+                  duration: 45
+      responses:
+        '200':
+          description: Answer stored and rated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerRatingResult'
+              examples:
+                ratingResponse:
+                  summary: Rating completed within POST request
+                  value:
+                    id: "9b3e8400-e29b-41d4-a716-446655440010"
+                    created_at: "2025-11-10T14:35:02.000Z"
+                    questionId: "7a3e8400-e29b-41d4-a716-446655440001"
+                    score: "85"
+                    feedback: "Good explanation with clear examples. Consider adding more detail about the key concepts."
+                    text: "Thank you."
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingField:
+                  summary: Missing required field
+                  value:
+                    error:
+                      code: "MISSING_FIELD"
+                      message: "questionId is required"
+                      timestamp: "2025-11-10T14:35:00.000Z"
+                invalidAudioFormat:
+                  summary: Unsupported audio format
+                  value:
+                    error:
+                      code: "INVALID_FORMAT"
+                      message: "audioFormat must be 'webm' or 'mp4'"
+                      timestamp: "2025-11-10T14:35:00.000Z"
+                audioFileTooLarge:
+                  summary: Audio file exceeds size limit
+                  value:
+                    error:
+                      code: "FILE_TOO_LARGE"
+                      message: "Audio file must be under 50MB"
+                      timestamp: "2025-11-10T14:35:00.000Z"
+        '404':
+          description: Question or evaluation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                questionNotFound:
+                  summary: Question does not exist
+                  value:
+                    error:
+                      code: "NOT_FOUND"
+                      message: "Question with id 7a3e8400-e29b-41d4-a716-446655440001 not found"
+                      timestamp: "2025-11-10T14:35:00.000Z"
+        '500':
+          description: Server error during rating
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ratingServiceError:
+                  summary: Rating service failed
+                  value:
+                    error:
+                      code: "RATING_SERVICE_ERROR"
+                      message: "Rating service is currently unavailable. Please try again later."
+                      timestamp: "2025-11-10T14:35:00.000Z"
+
+components:
+  schemas:
+    RateAnswerRequest:
+      type: object
+      required:
+        - questionId
+        - evaluationId
+        - audioFile
+        - audioFormat
+        - duration
+      properties:
+        questionId:
+          type: string
+          format: uuid
+          description: UUID of the question being answered
+          example: "7a3e8400-e29b-41d4-a716-446655440001"
+        evaluationId:
+          type: string
+          format: uuid
+          description: UUID of the source evaluation
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        audioFile:
+          type: string
+          format: binary
+          description: Audio file data (WebM or MP4/M4A)
+        audioFormat:
+          type: string
+          enum: [webm, mp4]
+          description: Format of the audio file
+          example: "webm"
+        duration:
+          type: number
+          minimum: 0
+          description: Duration of the audio in seconds
+          example: 45
+
+    AnswerRatingResult:
+      type: object
+      required:
+        - id
+        - created_at
+        - questionId
+        - score
+        - feedback
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique answer identifier assigned by the service
+          example: "9b3e8400-e29b-41d4-a716-446655440010"
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the rating workflow completed
+          example: "2025-11-10T14:35:02.000Z"
+        questionId:
+          type: string
+          format: uuid
+          description: Identifier of the original question (echoed back for verification)
+          example: "7a3e8400-e29b-41d4-a716-446655440001"
+        score:
+          oneOf:
+            - type: integer
+              minimum: 0
+              maximum: 100
+            - type: string
+              pattern: '^(100|[0-9]{1,2})(\.\d+)?$'
+          description: Numeric score in the range 0-100 (may be returned as string)
+          example: "85"
+        feedback:
+          type: string
+          minLength: 1
+          maxLength: 300
+          description: Text feedback describing the rating
+          example: "Good explanation with clear examples. Consider adding more detail about the key concepts."
+        text:
+          type: string
+          description: Optional short acknowledgement or closing remark from evaluator
+          example: "Thank you."
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - timestamp
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: "MISSING_FIELD"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "questionId is required"
+            timestamp:
+              type: string
+              format: date-time
+              description: Error timestamp
+              example: "2025-11-10T14:35:00.000Z"

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChatBubble } from './ChatBubble';
+import { QAPhaseEntry } from './QAPhaseEntry';
 import { parseSrtToText, isValidSrt } from '../services/srtParser';
 import type { EvaluationResult } from '../models/evaluation';
 
@@ -39,6 +40,14 @@ export const EvaluationChat: React.FC<EvaluationChatProps> = ({ evaluation, clas
       <div className="space-y-2">
         <ChatBubble message={inputText} type="user" />
         <ChatBubble message={evaluation.output} type="ai" />
+      </div>
+
+      {/* Q&A Phase Entry */}
+      <div className="mt-4 pt-4 border-t border-gray-300">
+        <p className="text-sm text-gray-600 mb-3">
+          Ready for the next step? Practice answering questions about your presentation.
+        </p>
+        <QAPhaseEntry evaluationId={evaluation.id} />
       </div>
     </div>
   );
