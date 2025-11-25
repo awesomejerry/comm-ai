@@ -32,7 +32,7 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
   const currentQuestion = useAtomValue(currentQuestionAtom);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useAtom(currentQuestionIndexAtom);
   const [session, setSession] = useAtom(currentQASessionAtom);
-  const [submittingAnswerId, setSubmittingAnswerId] = useState<string | null>(null);
+  const [submittingAnswerIds, setSubmittingAnswerIds] = useState<Set<string>>(new Set());
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -111,23 +111,25 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
     };
 
     // Update session with new answer
-    const updatedAnswers = new Map(session.answers);
-    updatedAnswers.set(currentQuestion.id, answer);
+    setSession((prevSession) => {
+      if (!prevSession) return prevSession;
 
-    const updatedSession = {
-      ...session,
-      answers: updatedAnswers,
-      updatedAt: new Date(),
-    };
+      const updatedAnswers = new Map(prevSession.answers);
+      updatedAnswers.set(currentQuestion.id, answer);
 
-    setSession(updatedSession);
+      const updatedSession = {
+        ...prevSession,
+        answers: updatedAnswers,
+        updatedAt: new Date(),
+      };
 
-    // Persist to IndexedDB
-    try {
-      await saveSession(updatedSession);
-    } catch (err) {
-      console.error('Failed to save session:', err);
-    }
+      // Persist to IndexedDB
+      saveSession(updatedSession).catch((err) => {
+        console.error('Failed to save session:', err);
+      });
+
+      return updatedSession;
+    });
   };
 
   /**
@@ -139,24 +141,34 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
     const answer = Array.from(session.answers.values()).find((a) => a.id === answerId);
     if (!answer) return;
 
-    setSubmittingAnswerId(answerId);
+    setSubmittingAnswerIds((prev) => {
+      const next = new Set(prev);
+      next.add(answerId);
+      return next;
+    });
 
     try {
       // Update status to uploading
-      const updatedAnswers = new Map(session.answers);
-      updatedAnswers.set(answer.questionId, {
-        ...answer,
-        uploadStatus: 'uploading' as const,
+      setSession((prevSession) => {
+        if (!prevSession) return prevSession;
+        const updatedAnswers = new Map(prevSession.answers);
+        const currentAnswer = updatedAnswers.get(answer.questionId);
+        if (!currentAnswer) return prevSession;
+
+        updatedAnswers.set(answer.questionId, {
+          ...currentAnswer,
+          uploadStatus: 'uploading' as const,
+        });
+
+        const updatedSession = {
+          ...prevSession,
+          answers: updatedAnswers,
+          updatedAt: new Date(),
+        };
+
+        saveSession(updatedSession).catch(console.error);
+        return updatedSession;
       });
-
-      let updatedSession = {
-        ...session,
-        answers: updatedAnswers,
-        updatedAt: new Date(),
-      };
-
-      setSession(updatedSession);
-      await saveSession(updatedSession);
 
       // Submit answer for rating (synchronous response)
       const { answerId: serverAnswerId, rating } = await submitAnswerForRating(
@@ -165,42 +177,59 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
       );
 
       // Update with server answer ID and rating
-      updatedAnswers.set(answer.questionId, {
-        ...answer,
-        answerId: serverAnswerId,
-        uploadStatus: 'uploaded' as const,
-        rating,
-        ratedAt: rating.ratedAt,
+      setSession((prevSession) => {
+        if (!prevSession) return prevSession;
+        const updatedAnswers = new Map(prevSession.answers);
+        const currentAnswer = updatedAnswers.get(answer.questionId);
+        if (!currentAnswer) return prevSession;
+
+        updatedAnswers.set(answer.questionId, {
+          ...currentAnswer,
+          answerId: serverAnswerId,
+          uploadStatus: 'uploaded' as const,
+          rating,
+          ratedAt: rating.ratedAt,
+        });
+
+        const updatedSession = {
+          ...prevSession,
+          answers: updatedAnswers,
+          updatedAt: new Date(),
+        };
+
+        saveSession(updatedSession).catch(console.error);
+        return updatedSession;
       });
-
-      updatedSession = {
-        ...session,
-        answers: updatedAnswers,
-        updatedAt: new Date(),
-      };
-
-      setSession(updatedSession);
-      await saveSession(updatedSession);
     } catch (err) {
       console.error('Failed to submit answer:', err);
 
       // Update status to error
-      const updatedAnswers = new Map(session.answers);
-      updatedAnswers.set(answer.questionId, {
-        ...answer,
-        uploadStatus: 'error' as const,
+      setSession((prevSession) => {
+        if (!prevSession) return prevSession;
+        const updatedAnswers = new Map(prevSession.answers);
+        const currentAnswer = updatedAnswers.get(answer.questionId);
+        if (!currentAnswer) return prevSession;
+
+        updatedAnswers.set(answer.questionId, {
+          ...currentAnswer,
+          uploadStatus: 'error' as const,
+        });
+
+        const errorSession = {
+          ...prevSession,
+          answers: updatedAnswers,
+          updatedAt: new Date(),
+        };
+
+        saveSession(errorSession).catch(console.error);
+        return errorSession;
       });
-
-      const errorSession = {
-        ...session,
-        answers: updatedAnswers,
-        updatedAt: new Date(),
-      };
-
-      setSession(errorSession);
-      await saveSession(errorSession);
     } finally {
-      setSubmittingAnswerId(null);
+      setSubmittingAnswerIds((prev) => {
+        const next = new Set(prev);
+        next.delete(answerId);
+        return next;
+      });
     }
   };
 
@@ -285,7 +314,7 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
         className="flex-1 overflow-y-auto p-6 space-y-4"
         role="feed"
         aria-label="Questions and answers"
-        aria-busy={submittingAnswerId !== null}
+        aria-busy={submittingAnswerIds.size > 0}
       >
         {/* Questions and answers list */}
         {questions.map((question, index) => (
@@ -304,7 +333,7 @@ export function QAChatInterface({ isLoading = false, error = null }: QAChatInter
                 showNumber={true}
                 questionOrder={question.order}
                 onSubmit={() => handleSubmitAnswer(answers.get(question.id)!.id)}
-                isSubmitting={submittingAnswerId === answers.get(question.id)!.id}
+                isSubmitting={submittingAnswerIds.has(answers.get(question.id)!.id)}
               />
             )}
           </div>
