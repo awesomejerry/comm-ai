@@ -19,6 +19,8 @@ intact so manual edits are preserved across automated regenerations.
 - Browser local storage / IndexedDB for pending recordings (7-day retention) (008-present-mode)
 - TypeScript 5.x, Node.js (latest LTS) + React 18, Vite, Tailwind CSS, Jotai (state management), MediaRecorder API, Supabase JS client (009-evaluation-qa)
 - Browser IndexedDB for pending Q&A session state, recordings stored temporarily until submission (009-evaluation-qa)
+- TypeScript 5.x + React 18, Vite, Tailwind CSS, Supabase JS client (010-learning-cards-qa)
+- Browser local storage for user progress, n8n API for Q&A data (010-learning-cards-qa)
 
 - TypeScript 5.x, Node.js + React 18, Vite, Tailwind CSS, pdf.js (004-apply-branding-to)
 - N/A (UI/branding changes only) (004-apply-branding-to)
@@ -73,9 +75,9 @@ specs/
 : Follow standard conventions
 
 ## Recent Changes
+- 010-learning-cards-qa: Added TypeScript 5.x + React 18, Vite, Tailwind CSS, Supabase JS client
 - 009-evaluation-qa: Added TypeScript 5.x, Node.js (latest LTS) + React 18, Vite, Tailwind CSS, Jotai (state management), MediaRecorder API, Supabase JS client
 - 008-present-mode: Added TypeScript 5.x, Node.js (latest LTS) + React 18, Vite, Tailwind CSS, pdf.js, Jotai (state management), MediaRecorder API
-- 007-admin-evaluations-page: Added TypeScript 5.x, Node.js (latest LTS), React 18 + React, Vite, Tailwind CSS, Supabase JS client (for auth context)
 
 
 <!-- MANUAL ADDITIONS START -->

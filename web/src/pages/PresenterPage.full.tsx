@@ -7,7 +7,7 @@ import { RecordingController } from '../recording/recordingController';
 import { UploaderQueue } from '../services/uploaderQueue';
 import type { RecordingState, Recording } from '../models/presentation';
 import { useAuth } from '../components/AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import LogoutButton from '../components/LogoutButton';
 import { presentationModeAtom, isRecordingActiveAtom } from '../models/presentMode';
 import { PresentModeToggle } from '../components/PresentModeToggle';
@@ -499,6 +499,9 @@ export default function PresenterPageFull() {
             <div>
               <h1 className="text-3xl font-bold text-commAi-primary mb-2">Comm-AI</h1>
               <p className="text-gray-600">Professional Pitch Training Platform</p>
+              <Link to="/learning-cards" className="text-blue-500 hover:text-blue-700 block mt-2">
+                Learning Cards
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
               {/* Present Mode Toggle */}

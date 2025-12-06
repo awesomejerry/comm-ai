@@ -1,6 +1,7 @@
 import { AuthProvider } from './components/AuthProvider';
 import PresenterPage from './pages/PresenterPage.full';
 import { QAPage } from './pages/QAPage';
+import QALearningCards from './pages/QALearningCards';
 import { LoginForm } from './components/LoginForm';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
 import { Routes, Route } from 'react-router-dom';
@@ -31,7 +32,14 @@ const App: React.FC = () => {
             </AuthenticatedRouter>
           }
         />
-        AAAAA BBBBB
+        <Route
+          path="/learning-cards"
+          element={
+            <AuthenticatedRouter>
+              <QALearningCards />
+            </AuthenticatedRouter>
+          }
+        />
         <Route
           path="/*"
           element={

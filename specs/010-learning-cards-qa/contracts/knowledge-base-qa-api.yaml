@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Knowledge Base Q&A API
+  version: 1.0.0
+  description: API for retrieving Q&A data from n8n webhook
+
+servers:
+  - url: https://n8n.awesomejerry.space
+    description: Production server
+
+paths:
+  /webhook/comm-ai/knowledge-base-qa:
+    get:
+      summary: Retrieve list of Q&As
+      description: Fetches the available Q&A pairs for the learning cards page
+      operationId: getKnowledgeBaseQA
+      responses:
+        '200':
+          description: Successful response with Q&A data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - question
+                    - answer
+                    - evidence
+                  properties:
+                    id:
+                      type: string
+                      description: Unique identifier for the Q&A pair
+                    question:
+                      type: string
+                      description: The question text
+                    answer:
+                      type: string
+                      description: The answer text
+                    evidence:
+                      type: string
+                      description: Ground truth information supporting the answer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      summary: Regenerate Q&A content
+      description: Triggers regeneration of Q&A pairs on the server side
+      operationId: regenerateKnowledgeBaseQA
+      responses:
+        '200':
+          description: Regeneration triggered successfully
+        '500':
+          description: Server error
